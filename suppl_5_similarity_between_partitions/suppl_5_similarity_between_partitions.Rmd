@@ -1,0 +1,122 @@
+---
+title: "Similarity between partitions"
+author: "Zuguang Gu (z.gu@dkfz.de)"
+date: '`r Sys.Date()`'
+output:
+  html_document:
+    fig_caption: true
+---
+
+-----------------------------------------------------------
+
+```{r, echo = FALSE, message = FALSE}
+library(cola)
+library(GetoptLong)
+library(dendextend)
+library(ComplexHeatmap)
+library(clue)
+
+collect_hclust = function(project, k) {
+	if(project == "recount2") {
+		id_list = dir("/icgc/dkfzlsdf/analysis/B080/guz/cola_test/recount2")
+	} else if(project == "GDS") {
+		id_list = dir("/icgc/dkfzlsdf/analysis/B080/guz/cola_test/GDS", pattern = "^GDS\\d+$")
+	}
+
+	df = file.info(qq("/icgc/dkfzlsdf/analysis/B080/guz/cola_test/@{project}/@{id_list}", collapse = FALSE))
+	id_list = basename(rownames(df)[df$isdir])
+
+	lt = list()
+	i = 0
+	for(id in id_list) {
+		i = i + 1
+		message(qq("loading @{id} (@{i}/@{length(id_list)})..."))
+			
+		res = readRDS(qq("/icgc/dkfzlsdf/analysis/B080/guz/cola_test/@{project}/@{id}/@{id}_cola_all.rds"))
+
+		pl = lapply(res@list, function(x) as.cl_partition(get_membership(x, k = k)))
+		clen = cl_ensemble(list = pl)
+		m_diss = cl_dissimilarity(clen, method = "euclidean")
+		lt[[i]] = hclust(m_diss)
+	}
+	names(lt) = id_list
+	return(lt)
+}
+
+make_plot = function(k) {
+	project = "GDS"
+
+	hl = collect_hclust(project, k = k)
+	hens = cl_ensemble(list = hl)
+	dend = cl_consensus(hens)
+	dend = as.dendrogram(hclust(dend$.Data))
+
+	label_color = c(`ATC:hclust` = "#66C2A5", `ATC:kmeans` = "#66C2A5", `ATC:pam` = "#66C2A5", 
+		`ATC:mclust` = "#66C2A5", `ATC:NMF` = "#66C2A5", `ATC:skmeans` = "#66C2A5", 
+		`CV:hclust` = "#FC8D62", `SD:hclust` = "#FC8D62", `MAD:hclust` = "#FC8D62", 
+		`CV:pam` = "#8DA0CB", `SD:pam` = "#8DA0CB", `MAD:pam` = "#8DA0CB", 
+		`CV:mclust` = "#E78AC3", `SD:mclust` = "#E78AC3", `MAD:mclust` = "#E78AC3", 
+		`CV:NMF` = "#A6D854", `SD:NMF` = "#A6D854", `MAD:NMF` = "#A6D854", 
+		`CV:skmeans` = "#FFD92F", `SD:skmeans` = "#FFD92F", `MAD:skmeans` = "#FFD92F", 
+		`CV:kmeans` = "#E5C494", `SD:kmeans` = "#E5C494", `MAD:kmeans` = "#E5C494"
+	)
+
+	if(k >= 5) dend = rotate(dend, names(label_color))
+
+	par(mfrow = c(1, 2))
+	par(mar = c(4, 2, 2, 6), cex = 0.9)
+	color_labels(dend, col = label_color[labels(dend)]) %>% plot(horiz = TRUE, main = qq("Similarity between partitions, k = @{k}, @{project} datasets"))
+
+	rect(0-0.05, 1-0.3, dend_heights(dend[[1]]) + 0.2, 6 + 0.3, border = label_color[labels(dend[[1]])[1]], lty = 2)
+	rect(0-0.05, 7-0.3, dend_heights(dend[[2]][[1]]) + 0.2, 9 + 0.3, border = label_color[labels(dend[[2]][[1]])[1]], lty = 2)
+	rect(0-0.05, 10-0.3, dend_heights(dend[[2]][[2]][[1]]) + 0.2, 12 + 0.3, border = label_color[labels(dend[[2]][[2]][[1]])[1]], lty = 2)
+	rect(0-0.05, 13-0.3, dend_heights(dend[[2]][[2]][[2]][[1]]) + 0.2, 15 + 0.3, border = label_color[labels(dend[[2]][[2]][[2]][[1]])[1]], lty = 2)
+	rect(0-0.05, 16-0.3, dend_heights(dend[[2]][[2]][[2]][[2]][[1]]) + 0.2, 18 + 0.3, border = label_color[labels(dend[[2]][[2]][[2]][[2]][[1]])[1]], lty = 2)
+	rect(0-0.05, 19-0.3, dend_heights(dend[[2]][[2]][[2]][[2]][[2]][[1]]) + 0.2, 21 + 0.3, border = label_color[labels(dend[[2]][[2]][[2]][[2]][[2]][[1]])[1]], lty = 2)
+	rect(0-0.05, 22-0.3, dend_heights(dend[[2]][[2]][[2]][[2]][[2]][[2]]) + 0.2, 24 + 0.3, border = label_color[labels(dend[[2]][[2]][[2]][[2]][[2]][[2]])[1]], lty = 2)
+
+	project = "recount2"
+
+	hl = collect_hclust(project, k = k)
+	hens = cl_ensemble(list = hl)
+	dend = cl_consensus(hens)
+	dend = as.dendrogram(hclust(dend$.Data))
+
+	par(mar = c(4, 2, 2, 6), cex = 0.9)
+	dend = rotate(dend, names(label_color))
+	color_labels(dend, col = label_color[labels(dend)]) %>% plot(horiz = TRUE, main = qq("Similarity between partitions, k = @{k}, @{project} datasets"))
+}
+```
+
+
+## {.tabset}
+
+### k = 2
+
+```{r, echo = FALSE, message = FALSE, fig.align = "center", fig.width = 11, fig.height = 6, fig.cap = "Figure 1A. Similarity between partitions for k = 2"}
+make_plot(k = 2)
+```
+
+### k = 3
+
+```{r, echo = FALSE, message = FALSE, fig.align = "center", fig.width = 11, fig.height = 6, fig.cap = "Figure 1B. Similarity between partitions for k = 3"}
+make_plot(k = 3)
+```
+
+### k = 4
+
+```{r, echo = FALSE, message = FALSE, fig.align = "center", fig.width = 11, fig.height = 6, fig.cap = "Figure 1C. Similarity between partitions for k = 4"}
+make_plot(k = 4)
+```
+
+### k = 5
+
+```{r, echo = FALSE, message = FALSE, fig.align = "center", fig.width = 11, fig.height = 6, fig.cap = "Figure 1D. Similarity between partitions for k = 5"}
+make_plot(k = 5)
+```
+
+### k = 6
+
+```{r, echo = FALSE, message = FALSE, fig.align = "center", fig.width = 11, fig.height = 6, fig.cap = "Figure 1E. Similarity between partitions for k = 6"}
+make_plot(k = 6)
+```

@@ -1,0 +1,406 @@
+---
+title: "Golub leukemia dataset analysis - Impact of Row Scaling (Part II)"
+author: "Zuguang Gu (z.gu@dkfz.de)"
+date: '`r Sys.Date()`'
+output:
+  html_document:
+    fig_caption: true
+---
+
+-----------------------------------------------------------
+
+```{r, echo = FALSE}
+library(knitr)
+knitr::opts_chunk$set(
+    echo = FALSE,
+    message = FALSE,
+    warning = FALSE,
+    fig.align = "center",
+    fig.width = 6,
+    fig.height = 6,
+    results = "hide")
+```
+
+```{r, echo = FALSE}
+library(ComplexHeatmap)
+library(circlize)
+library(GetoptLong)
+library(eulerr)
+library(cowplot)
+```
+
+```{r}
+library(golubEsets)
+data(Golub_Merge)
+m = exprs(Golub_Merge)
+colnames(m) = paste0("sample_", colnames(m))
+anno = pData(Golub_Merge)
+anno = anno[, c("ALL.AML", "T.B.cell")]
+anno_col = list("ALL.AML" = c("ALL" = "red", "AML" = "blue"),
+	            "T.B.cell" = c("B-cell" = "orange", "T-cell" = "purple"))
+```
+
+```{r, echo = FALSE}
+library(cola)
+res_list_1 = readRDS("/desktop-home/guz/project/development/cola_examples/Golub_leukemia/Golub_leukemia_subgroup.rds")
+res_list_2 = readRDS("/desktop-home/guz/project/development/cola_examples/Golub_leukemia/Golub_leukemia_subgroup_unscaled.rds")
+# adjust labels 2 -> 1, 1 -> 2 for k = 3
+new_class = res_list_2@consensus_class$`3`$class_df[, "class"]
+new_class[new_class == 1] = -1
+new_class[new_class == 2] = 1
+new_class[new_class == -1] = 2
+res_list_2@consensus_class$`3`$class_df[, "class"] = new_class
+
+new_membership = res_list_2@consensus_class$`3`$membership
+new_membership = new_membership[, c(2, 1, 3)]
+colnames(new_membership) = paste0("p", 1:3)
+res_list_2@consensus_class$`3`$membership = new_membership
+
+new_class = res_list_2@consensus_class$`2`$class_df[, "class"]
+new_class[new_class == 1] = -1
+new_class[new_class == 2] = 1
+new_class[new_class == -1] = 2
+res_list_2@consensus_class$`2`$class_df[, "class"] = new_class
+
+new_membership = res_list_2@consensus_class$`2`$membership
+new_membership = new_membership[, c(2, 1)]
+colnames(new_membership) = paste0("p", 1:2)
+res_list_2@consensus_class$`2`$membership = new_membership
+
+for(i in seq_along(res_list_2@list)) {
+	res = res_list_2@list[[i]]
+	
+	new_class = res@object_list$`3`$class_df[, "class"]
+	new_class[new_class == 1] = -1
+	new_class[new_class == 2] = 1
+	new_class[new_class == -1] = 2
+	res@object_list$`3`$class_df[, "class"] = new_class
+	
+	new_membership = res@object_list$`3`$membership
+	new_membership = new_membership[, c(2, 1, 3)]
+	colnames(new_membership) = paste0("p", 1:3)
+	res@object_list$`3`$membership = new_membership
+
+	new_membership_each = res@object_list$`3`$membership_each
+	new_membership_each[new_membership_each == 1] = -1
+	new_membership_each[new_membership_each == 2] = 1
+	new_membership_each[new_membership_each == -1] = 2
+	res@object_list$`3`$membership_each = new_membership_each
+
+	new_class = res@object_list$`2`$class_df[, "class"]
+	new_class[new_class == 1] = -1
+	new_class[new_class == 2] = 1
+	new_class[new_class == -1] = 2
+	res@object_list$`2`$class_df[, "class"] = new_class
+	
+	new_membership = res@object_list$`2`$membership
+	new_membership = new_membership[, c(2, 1)]
+	colnames(new_membership) = paste0("p", 1:2)
+	res@object_list$`2`$membership = new_membership
+
+	new_membership_each = res@object_list$`2`$membership_each
+	new_membership_each[new_membership_each == 1] = -1
+	new_membership_each[new_membership_each == 2] = 1
+	new_membership_each[new_membership_each == -1] = 2
+	res@object_list$`2`$membership_each = new_membership_each
+
+	res_list_2@list[[i]] = res
+}
+```
+
+In the two-group classification, AML samples are basically clustered together tightly no matter rows 
+are scaled are not. The big overlap between also due to the difference between AML samples and ALL samples
+or at least a subset of ALL samples. As we observed from cola results, samples can also be separated into three
+groups where ALL samples are separated into two groups.
+
+### Consensus heatmaps three groups {.tabset}
+
+In the three-group classification, when rows are scaled, only `ATC:skmeans` generates stable partition with 1-PAC score 0.96, while when rows are not scaled, none method generates stable partition.
+
+#### Rows are scaled
+
+```{r, fig.width = 12, fig.height = 8, fig.cap = "Figure 8A. Consensus heatmaps with k = 3"}
+collect_plots(res_list_1, k = 3, anno = anno, anno_col = anno_col)
+```
+
+#### Rows are unscaled
+
+```{r, fig.width = 12, fig.height = 8, fig.cap = "Figure 8B. Consensus heatmaps with k = 3"}
+collect_plots(res_list_2, k = 3, anno = anno, anno_col = anno_col)
+```
+
+###
+
+We pick the three-group classification from `ATC:skmeans` for the scaled case, and ...
+On the other hand, the original Golub study classify ALL samples into B-cell and T-cell groups by SOM method.
+Note their method was applied on the whole expression matrix that are not scaled.
+
+```{r, fig.height = 1, fig.width = 8, fig.cap = "Figure 10."}
+cl1 = get_classes(res_list_1["ATC:skmeans"], k = 3)[, 1]
+cl2 = get_classes(res_list_2["SD:skmeans"], k = 3)[, 1]
+
+ht = Heatmap(rbind("ATC:skeamns, scaled" = cl1, "SD:skmeans, unscaled" = cl2), name = "Class", col = c("1" = "#66C2A5", "2" = "#FC8D62", "3" = "#8DA0CB"),
+	show_row_dend = FALSE, show_column_dend = FALSE,
+	top_annotation = HeatmapAnnotation(df = anno, col = anno_col))
+draw(ht)
+```
+
+The two classifications are both separated...
+
+
+```{r, fig.width = 14, fig.height = 7}
+p1 = ~dimension_reduction(res_list_1["ATC:skmeans"], k = 3, method = "PCA")
+p2 = ~dimension_reduction(res_list_2["SD:skmeans"], k = 3, method = "PCA", scale_rows = FALSE)
+plot_grid(p1, p2, nrow = 1,labels = c("A", "B"))
+```
+
+
+
+### Signature genes
+
+
+### {.tabset}
+
+#### ATC:skmeans, rows are scaled
+
+```{r, fig.width = 8, fig.height = 8, out.width = "600px", fig.cap = "Figure 11A"}
+tb1 = get_signatures(res_list_1["ATC:skmeans"], k = 3, anno = anno, anno_col = anno_col, simplify = TRUE)
+```
+
+#### SD:skmeans, row are unscaled
+
+```{r, fig.width = 8, fig.height = 8, out.width = "600px", fig.cap = "Figure 11B"}
+tb2 = get_signatures(res_list_2["SD:skmeans"], k = 3, anno = anno, anno_col = anno_col, simplify = TRUE, scale_rows = TRUE)
+```
+
+
+### Only look at ALL samples
+
+The overlap between the two sets of classification becomes large. We .. it due to the difference
+from AML group.
+
+For the classification.. we removed the samples with label 1 in either classifications. ANd we applied
+t-test between group 2 and group 3 ...
+
+```{r, fig.width = 12, fig.height = 6, fig.cap = "Figure 13."}
+ind1 = cl1 != 1
+
+ind2 = cl2 != 1
+
+library(genefilter)
+mat = get_matrix(res_list_1)
+t1 = rowttests(mat[, ind1], factor(cl1[ind1]))
+t2 = rowttests(mat[, ind2], factor(cl2[ind2]))
+
+t1$fdr = p.adjust(t1$p.value, "BH")
+t2$fdr = p.adjust(t2$p.value, "BH")
+
+col_fun = colorRamp2(c(-2, 0, 2), c("green", "white", "red"))
+anno_col$class = c("1" = "#66C2A5", "2" = "#FC8D62", "3" = "#8DA0CB")
+mat1 = mat[t1$fdr < 0.05, ind1]
+ht1 = Heatmap(t(scale(t(mat1))), name = "Expression", 
+	show_row_names = FALSE, col = col_fun,
+	show_column_names = FALSE, show_row_dend = FALSE, show_column_dend = FALSE,
+	top_annotation = HeatmapAnnotation(class = cl1[ind1], T.B.cell = anno$T.B.cell[ind1], col = anno_col),
+	column_split = cl1[ind1], row_split = ifelse(t1$statistic[t1$fdr < 0.05] > 0, "group1", "group2"),
+	column_title = qq("scaled, @{sum(t1$fdr < 0.05)} genes with FDR < 0.05"))
+p1 = grid.grabExpr(ht1 <- draw(ht1, merge_legends = TRUE))
+od1 = row_order(ht1)
+
+mat2 = mat[t2$fdr < 0.05, ind2]
+ht2 = Heatmap(t(scale(t(mat2))), name = "Expression", 
+	show_row_names = FALSE, col = col_fun,
+	show_column_names = FALSE, show_row_dend = FALSE, show_column_dend = FALSE,
+	top_annotation = HeatmapAnnotation(class = cl2[ind2], T.B.cell = anno$T.B.cell[ind2], col = anno_col),
+	column_split = cl2[ind2], row_split = ifelse(t2$statistic[t2$fdr < 0.05] > 0, "group1", "group2"),
+	column_title = qq("unscaled, @{sum(t2$fdr < 0.05)} genes with FDR < 0.05"))
+p2 = grid.grabExpr(ht2 <- draw(ht2, merge_legends = TRUE))
+od2 = row_order(ht2)
+
+plot_grid(p1, p2, nrow = 1, labels = c("A", "B"))
+```
+
+```{r, fig.width = 8, fig.height = 6}
+par(mfrow = c(2, 2), mar = c(2, 4, 4, 1))
+s = rowSds(get_matrix(res_list_1))
+s_rk = structure(rank(s), names = names(s))
+plot(s_rk, s, type = "h", col = "grey", xlim = c(0, 4200), xlab = "", ylab = "SD score")
+nm = rownames(mat2)[ od2[[1]] ]
+lines(s_rk[nm], s[nm], col = "blue", type = "h")
+hist(s_rk[nm], nclass = 20, xlim = c(0, 4200), xlab = "")
+
+plot(s_rk, s, type = "h", col = "grey", xlim = c(0, 4200), xlab = "", ylab = "SD score")
+nm = rownames(mat2)[ od2[[2]] ]
+lines(s_rk[nm], s[nm], col = "red", type = "h")
+hist(s_rk[nm], nclass = 20, xlim = c(0, 4200), xlab = "")
+```
+
+If look at the overlap between ... the two sets are quite exclusive.
+
+```{r, fig.width = 8, fig.height = 3, fig.cap = "Figure 14"}
+plot(euler(list(scaled = which(t1$fdr < 0.05), unscaled = which(t2$fdr < 0.05))), quantities = TRUE)
+```
+
+Since now the two sets of signatures are ... we next check the biological functions that are enriched
+in the two sets of genes.
+
+```{r}
+library(hu6800.db)
+x = hu6800ENTREZID
+mapped_probes = mappedkeys(x)
+id_mapping = unlist(as.list(x[mapped_probes]))
+tb1 = functional_enrichment(rownames(mat1)[unlist(od1)], id_mapping = id_mapping, 
+	ontology = "BP", verbose = FALSE)[[1]]
+tb1 = tb1[tb1$Count >= 5, , drop = FALSE]
+tb2 = functional_enrichment(rownames(mat1)[unlist(od2)], id_mapping = id_mapping, 
+	ontology = "BP", verbose = FALSE)[[1]]
+tb2 = tb2[tb2$Count >= 5, , drop = FALSE]
+```    
+
+```{r, fig.width = 10, fig.height = 6}
+ago = c(rownames(tb1), rownames(tb2))
+ago = unique(ago)
+pm = matrix(1, nrow = length(ago), ncol = 2)
+rownames(pm) = ago
+colnames(pm) = c("C_{s,3}", "C_{u,3}")
+pm[tb1$ID, 1] = tb1$p.adjust
+pm[tb2$ID, 2] = tb2$p.adjust
+
+fdr_cutoff = 0.01
+pm = pm[apply(pm, 1, function(x) any(x < fdr_cutoff)), ]
+all_go_id = rownames(pm)
+go_name = c(structure(tb1$Description, names = tb1$ID),
+	        structure(tb2$Description, names = tb2$ID))
+
+# code is also available at:
+# https://github.com/jokergoo/simplifyGO/blob/675c19a09ccd76af350a5cc50b1730a0f77fc6e3/R/split.R
+source("/desktop-home/guz/project/development/simplifyGO/R/split.R")
+library(GOSemSim)
+library(dendextend)
+library(digest)
+
+mat = get_GO_sim_mat(all_go_id, "BP")
+pm = pm[rownames(mat), ]
+set.seed(123)
+go_similarity_analysis = function(mat, pm, l = rep(TRUE, nrow(mat)), cutoff = 0.85) {
+	mat = mat[l, l, drop = FALSE]
+	pm = pm[l, , drop = FALSE]
+
+	dend = cluster_mat(mat)
+	# plot_dend(dend, mat, cutoff = 0.85)
+
+	cl = as.character(split_dend(dend, cutoff = cutoff))
+	cl_tb = table(cl)
+	cl[cl %in% names(cl_tb[cl_tb <= 5])] = "0"
+	cl = factor(cl, levels = c(setdiff(names(sort(table(cl), decreasing = TRUE)), "0"), "0"))
+
+	ht = Heatmap(mat, col = colorRamp2(c(0, 1), c("white", "red")),
+		name = "Similarity",
+		show_row_names = FALSE, show_column_names = FALSE, 
+		show_row_dend = FALSE, show_column_dend = FALSE,
+		# cluster_row_slices = FALSE, cluster_column_slices = FALSE,
+		row_split = cl, column_split = cl, 
+		border = "black", row_title = NULL,
+		row_gap = unit(0, "mm"), column_gap = unit(0, "mm"),
+		column_title = qq("GO similarity, @{nrow(mat)} terms"))
+
+	col_fun_p = colorRamp2(c(0, -log10(fdr_cutoff), 4), c("green", "white", "red"))
+	ht = Heatmap(-log10(pm), col = col_fun_p, name = "FDR",
+		show_row_names = FALSE, cluster_columns = FALSE,
+		border = "black", column_title = "FDR",
+		heatmap_legend_param = list(at = c(0, -log10(fdr_cutoff), 4), labels = c("1", fdr_cutoff, "<0.0001")),
+		width = unit(1.5, "cm")) + ht
+
+	index = tapply(1:nrow(mat), cl, function(index) {
+		mm = mat[index, index, drop = FALSE]
+		if(length(index)/nrow(mat) > 0.16) {
+			km = kmeans(mm, centers = 3)$cluster
+			index[unlist(tapply(1:nrow(mm), km, function(ind) {
+				 ind[which.max(rowMeans(mm[ind, ind, drop = FALSE]))]
+			}))]
+		} else if(length(index)/nrow(mat) > 0.08) {
+			km = kmeans(mm, centers = 2)$cluster
+			index[unlist(tapply(1:nrow(mm), km, function(ind) {
+				 ind[which.max(rowMeans(mm[ind, ind, drop = FALSE]))]
+			}))]
+		} else {
+			index[which.max(rowMeans(mat[index, index, drop = FALSE]))]
+		}
+	})
+	index = unlist(index)
+	index = index[names(index) != "0"]
+	labels = go_name[rownames(mat)[index]]
+	labels = sapply(labels, function(x) {
+		x2 = strwrap(x, width = 80)
+		if(length(x2) > 1) {
+			x2[2:length(x2)] = paste0("  ", x2[2:length(x2)])
+		}
+		paste(x2, collapse = "\n")
+	})
+	ht = ht + rowAnnotation(mark = anno_mark(at = index, labels = labels,
+		labels_gp = gpar(fontsize = 10)))
+	draw(ht, main_heatmap = "Similarity", ht_gap = unit(c(2, 0), "mm"), heatmap_legend_side = "left")
+}
+go_similarity_analysis(mat, pm, cutoff = 0.85)
+```
+
+### Gene ontology enrichment {.tabset}
+
+#### C_{s,3}
+
+```{r, results = "markup"}
+# tb1 = functional_enrichment(rownames(mat1)[od1[[1]]], id_mapping = id_mapping, 
+# 	ontology = "Reactome", organism = "human", universe = universe, verbose = FALSE)[[1]]
+tb1$qvalue = NULL
+tb1$geneID = NULL
+# tb1$Description = qq("<a href='https://reactome.org/content/detail/@{tb1$ID}' target='_blank'>@{tb1$Description}</a>", collapse = FALSE)
+# tb1$ID = NULL
+# tb1 = tb1[tb1$p.adjust <= fdr_cutoff & tb1$Count >= 5, , drop = FALSE]
+# gene_list = strsplit(tb1$geneID, "/")
+# tb1$geneID = NULL
+
+# n = length(gene_list)
+# jmat = matrix(1, nrow = n, ncol = n)
+# for(i in 1:(n-1)) {
+# 	for(j in (i+1):n) {
+# 		jmat[i, j] = jmat[j, i] = length(intersect(gene_list[[i]], gene_list[[j]]))/length(union(gene_list[[i]], gene_list[[j]]))
+# 	}
+# }
+# Heatmap(jmat)
+kable(tb1[tb1$p.adjust <= fdr_cutoff, , drop = FALSE], digits = 4, row.names = FALSE)
+```
+
+#### C_{u,3}
+
+```{r, results = "markup"}
+# tb2 = functional_enrichment(rownames(mat1)[od1[[2]]], id_mapping = id_mapping, 
+	# ontology = "Reactome", organism = "human", universe = universe, verbose = FALSE)[[1]]
+tb2$qvalue = NULL
+# tb2$Description = qq("<a href='https://reactome.org/content/detail/@{tb2$ID}' target='_blank'>@{tb2$Description}</a>", collapse = FALSE)
+# tb2$ID = NULL
+tb2$geneID = NULL
+kable(tb2[tb2$p.adjust <= fdr_cutoff, , drop = FALSE], digits = 4, row.names = FALSE)
+```
+
+###
+
+<br>
+<br>
+<br>
+<br>
+
+<style>
+#gene-ontology-enrichment div {
+	max-height: 400px;
+	overflow-y: auto;
+}
+#gene-ontology-enrichment table td {
+	padding: 2px 4px;
+}
+#gene-ontology-enrichment table th {
+	padding: 2px 4px;
+}
+</style>
+
+
+

@@ -1,0 +1,735 @@
+---
+title: "Application of cola on Methylation Dataset"
+author: "Zuguang Gu (z.gu@dkfz.de)"
+date: '`r Sys.Date()`'
+output:
+  html_document:
+    fig_caption: true
+---
+
+--------------------------------------------
+
+```{r, echo = FALSE}
+library(knitr)
+knitr::opts_chunk$set(
+    echo = FALSE,
+    message = FALSE,
+    warning = FALSE,
+    cache = TRUE,
+    results = FALSE,
+    fig.align = "center")
+```
+
+In this supplementary, we compare different top-value methods for extracting
+features for subgrouping methylation array dataset, also we compare the
+different consensus partitioning results based on CpG probes in different CpG
+categories (i.e. CpG islands (CGI), CGI shores and CGI seas).
+
+
+```{r}
+library(ComplexHeatmap)
+library(matrixStats)
+library(circlize)
+library(RColorBrewer)
+library(GenomicRanges)
+library(GetoptLong)
+library(ggplot2)
+library(cola)
+
+library(IlluminaHumanMethylation450kanno.ilmn12.hg19)
+data("IlluminaHumanMethylation450kanno.ilmn12.hg19", 
+	package = "IlluminaHumanMethylation450kanno.ilmn12.hg19")
+probe = IlluminaHumanMethylation450kanno.ilmn12.hg19 # change to a short name
+
+library(GEOquery)
+if(file.exists("/desktop-home/guz/project/development/cola_examples/GBM_450K/GSE36278_450K.RData")) {
+	load("/desktop-home/guz/project/development/cola_examples/GBM_450K/GSE36278_450K.RData")
+} else {
+	gset = getGEO("GSE36278")
+	save(gset, file = "/desktop-home/guz/project/development/cola_examples/GBM_450K/GSE36278_450K.RData")
+}
+
+mat = exprs(gset[[1]])
+colnames(mat) = phenoData(gset[[1]])@data$title
+mat = mat[rownames(getAnnotation(probe, what = "Locations")), ]
+
+l = getAnnotation(probe, what = "Locations")$chr %in% paste0("chr", 1:22) & 
+	is.na(getAnnotation(probe, what = "SNPs.137CommonSingle")$Probe_rs)
+mat = mat[l, ]
+
+cpg_anno = getAnnotation(probe, "Islands.UCSC")$Relation_to_Island[l]
+cpg_anno2 = cpg_anno
+cpg_anno2[ cpg_anno == "Island" ] = "island"
+cpg_anno2[ cpg_anno %in% c("N_Shelf", "S_Shelf", "OpenSea") ] = "sea"
+cpg_anno2[ cpg_anno %in% c("N_Shore", "S_Shore") ] = "shore"
+
+cgi_col = c("island" = "red", "shore" = "blue", "sea" = "grey")
+tb = table(cpg_anno2)[c("island", "shore", "sea")]
+```
+
+```{r}
+p1 = ggplot(data.frame(tb), aes(x = cpg_anno2, y = Freq, fill = cpg_anno2)) + 
+    geom_bar(stat = "identity") + 
+    scale_fill_manual(values = cgi_col) +
+    labs(fill = "CpG annotation", x = "CpG annotation")
+```
+
+```{r}
+mat1 = as.matrix(mat[, grep("GBM", colnames(mat))])   # tumor samples
+colnames(mat1) = gsub("GBM", "dkfz", colnames(mat1))
+
+mat1[is.na(mat1)] = runif(sum(is.na(mat1)))
+
+phenotype = read.table("/desktop-home/guz/project/development/cola_examples/GBM_450K/450K_annotation.txt", header = TRUE, sep = "\t", row.names = 1,
+    check.names = FALSE, comment.char = "", stringsAsFactors = FALSE)
+phenotype = phenotype[colnames(mat1), ]
+colnames(phenotype)[1:2] = c("dkfz_subtype", "tcga_subtype")
+
+anno_col = list(
+    dkfz_subtype = structure(names = c("IDH", "K27", "G34", "RTK I PDGFRA", "Mesenchymal", "RTK II Classic"), brewer.pal(6, "Set1"))
+)
+```
+
+The 450K methylation array dataset is from [Strum et al.,
+2012](http://dx.doi.org/10.1016/j.ccr.2012.08.024). The dataset is available
+from GEO database with ID
+[GSE36278](http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE36278). The
+processing of the dataset can be found
+[here](https://jokergoo.github.io/cola_examples/GBM_450K/).
+
+### Compare different top-value methods
+
+Top 5000 CpG probes with the highest standard deviation (SD), coeffcient of
+variance (CV), median absolute deviation (MAD) and ATC (ability to correlate
+to other rows) scores are extracted respectively. Additionally, CpG probes
+are also extracted based on two variants of ATC method:
+
+- `ATC_cgi_anno`: when calculating ATC score for the $i^{th}$ CpG probe, only the 
+  probes which have the same CpG annotation as $CpG_i$ are used. This method
+  aims to remove the effect of different methylation patterns due to CpGs in different CpG categories.
+- `ATC_SD`: this score is calculated as the mean rank of the rank by ATC
+  scores and by SD scores, i.e. `rank(rank(ATC) + rank(SD))`. This method aims
+  to integrate two top-value methods into one.
+
+CpG probes are categorized into three groups for which the annotation is
+provided by [the *IlluminaHumanMethylation450kanno.ilmn12.hg19* package](https://bioconductor.org/packages/IlluminaHumanMethylation450kanno.ilmn12.hg19/). The three
+CpG categories are:
+
+- *CpG islands* (CGI).
+- *CGI shores* The CpG shore is defined as the CpG sites 2kb from CpG
+  islands.
+- *CGI seas* All other CpG sites that do not belong to CpG islands or CGI shores.
+  In the annotation from **IlluminaHumanMethylation450kanno.ilmn12.hg19** package, there
+  is also CGI shelf annotation. In this analysis, for simplicity, we merge CGI
+  shelf and CGI sea to a same category.
+
+Figure 1 visualizes the methylation profile for the top 5000 CpG probes
+extracted from different top-value methods. At the bottom of each heatmap is
+an annotation (`dkfz_subtype`) from [the orignial
+study](http://dx.doi.org/10.1016/j.ccr.2012.08.024) where the subtypes were
+predicted by top 8000 genes with the highest SD scores and by k-means
+consensus clustering. In general, the top 5000 CpG probes by SD, CV and MAD
+show distinct methylation patterns between subtypes. CpG probes by SD can
+separate all six subtypes which is expected because the original subtypes were
+also based on probes with top SD scores. Probes by CV can separate _G34_,
+_IDH_, _K27_ and _RTK II Classic_ subtypes but not the other two. SD and MAD
+extract more similar CpG probes (Figure 2) while CV tends to extract probes
+with lower methylation in general.
+
+
+As a comparison, top 5000 CpG probes extracted by ATC-related methods have
+little overlap to probes based on SD/CV/MAD, also the methylation profiles are
+different (compare the top three heatmaps and the bottom three heatmaps). The
+top probes by ATC-related methods have very high proportion of CGI sea and
+they can only separate samples into two major groups (_IDH_/_RTK II
+Classic_/_mesenchymal_ and _G34_/_K27_/_RTK_I PDGFRA_) which are high-methylation
+group and low-methylation group.
+
+
+```{r}
+ATC_cgi_anno = function (mat, cpg_anno, min_cor = 0, mc.cores = 1) {
+    mat = t(mat)
+    n = ncol(mat)
+
+    ind_list = split(seq_len(n), cpg_anno)
+
+    v_list = mclapply(ind_list, function(ind) {
+        v = numeric(length(ind))
+        for (i in seq_along(ind)) {
+            ind2 = ind[-i]
+            if (length(ind2) > 1000) {
+                ind2 = sample(ind2, 1000)
+            }
+            suppressWarnings(cor_v <- abs(cor(mat[, ind[i], drop = FALSE], mat[, ind2, drop = FALSE])))
+            if(sum(is.na(cor_v))/length(cor_v) >= 0.75) {
+                v[i] = 1
+            } else {
+                f = ecdf(cor_v)
+                cor_v = seq(min_cor, 1, length = 1000)
+                n2 = length(cor_v)
+                v[i] = sum((cor_v[2:n2] - cor_v[1:(n2 - 1)]) * f(cor_v[-n2]))
+            }
+        }
+        return(v)
+    }, mc.cores = mc.cores)
+
+    v = numeric(n)
+    for(i in seq_along(v_list)) {
+        v[ ind_list[[i]] ] = v_list[[i]]
+    }
+    v = 1 - min_cor - v
+    names(v) = NULL
+    return(v)
+}
+
+if(file.exists("GBM_450k_top_value_list.rds")) {
+    top_value_list = readRDS("GBM_450k_top_value_list.rds")
+} else {
+    top_value_list = list()
+    top_value_list$SD = cola:::get_top_value_method("SD")(mat1)
+    top_value_list$CV = cola:::get_top_value_method("CV")(mat1)
+    top_value_list$MAD = cola:::get_top_value_method("MAD")(mat1)
+    top_value_list$ATC = cola:::get_top_value_method("ATC")(mat1, mc.cores = 4)
+    top_value_list$ATC_cgi_anno = cola:::get_top_value_method("ATC")(mat1, mc.cores = 4, group = cpg_anno2)
+    # top_value_list$ATC_0.5 = cola:::get_top_value_method("ATC")(mat1, mc.cores = 4, min_cor = 0.5)
+
+    top_value_list$ATC_SD = rank(rank(top_value_list$SD) + rank(top_value_list$ATC))
+
+    saveRDS(top_value_list, file = "GBM_450k_top_value_list.rds")
+}
+```
+
+```{r}
+tb = sapply(top_value_list, function(x) {
+	od = order(x, decreasing = TRUE)[1:5000]
+	table(cpg_anno2[od])
+})
+tb = do.call(rbind, lapply(names(tb), function(nm) {
+    cbind(method = nm, data.frame(tb[[nm]]))
+}))
+tb$Var1 = factor(tb$Var1, levels = c("island", "shore", "sea"))
+tb$method = factor(tb$method, levels = c("SD", "CV", "MAD", "ATC", "ATC_cgi_anno", "ATC_SD"))
+p2 = ggplot(tb, aes(x = method, y = Freq, fill = Var1)) + 
+    geom_bar(stat = "identity") + 
+    scale_fill_manual(values = cgi_col) +
+    labs(fill = "CpG annotation")
+```
+
+
+```{r, fig.width = 14, fig.height = 10, fig.cap = "Figure 1. Top 5000 CpG probes under different top-value methods."}
+meth_col_fun = colorRamp2(c(0, 0.5, 1), c("blue", "white", "red"))
+grid.newpage()
+pushViewport(viewport(layout = grid.layout(nrow = 2, ncol = 3)))
+for(i in seq_along(top_value_list)) {
+    pushViewport(viewport(layout.pos.row = ceiling(i/3), layout.pos.col = (i-1) %% 3 + 1 ))
+    od = order(top_value_list[[i]], decreasing = TRUE)[1:5000]
+    ht = Heatmap(mat1[od, ], name = "meth", column_title = qq("top @{length(od)} rows of @{names(top_value_list)[i]}"),
+        show_row_names = FALSE, show_row_dend = FALSE, show_column_names = FALSE,
+        row_split = cpg_anno2[od], col = meth_col_fun,
+        left_annotation = rowAnnotation(cpg_anno = cpg_anno2[od], col = list(cpg_anno = cgi_col)),
+        bottom_annotation = HeatmapAnnotation(dkfz_subtype = phenotype$dkfz_subtype, col = anno_col))
+    draw(ht, newpage = FALSE, merge_legend = TRUE)
+    popViewport()
+}
+popViewport()
+```
+
+```{r, fig.height = 5, fig.width = 6, out.width = "400px", fig.cap = "Figure 2. Euler diagram of the top 5000 CpG sites from different top-value methods. Top 5000 CpG sites extracted by ATC-related methods (the top three) have little overlap to those by SD/CV/MAD (the bottom three)."}
+top_elements_overlap(top_value_list, top_n = 5000, method = "euler")
+```
+
+
+### Compare different CpG categories
+
+CpGs fall into different categories and different types of CpGs may play
+different roles in transcriptional regulations. For example, CGIs are enriched
+at transcriptional start sites (TSS) and they are generally un-methylated for
+actively expressed genes. A increase of the methylation at gene TSS generally
+means to suppress the gene expression. CGI shores have more dynamic
+methylation patterns and CGI seas overlap more to the gene bodies or
+intergenic regions and normally relate to methylation changes on long-range
+regions which might relate to the chromatin structure changes.
+
+As already shown in Figure 1, the proportion of CpGs in each CpG categories
+are different in the top 5000 probes extracted from different top-value
+methods (the annotation on the left of each heatmap in Figure 1, also put
+together in Figure 3B). E.g. probes in CGI have higher SD values, while the
+probes in CGI seas show stronger correlation to each other. Thus, we think it
+is worthwile to extract features and apply consensus partitioning for probes
+in different CpG categories separately.
+
+As shown in Figure 3B, for the top 5000 CpGs by SD, there are only 20% of the
+CpG belonging to CGI sea, while 46.2% of the probes in the complete 450K array are in
+CGI sea (For the 450K methylation array, as visualized in Figure 3A, 30.4% of
+the CpGs belong to CGI, 23.4% belong to CGI shores and 46.2% belong to CGI
+seas.). Thus, simply taking top CpG features from all probes might miss the interesting
+patterns from CGI shores or CGI seas.
+
+
+```{r, fig.width = 12, fig.height = 5, fig.cap = "Figure 3. A) Frequency of CpGs in different categories. B) Fraction of different CpG categories for the top 5000 CpGs by different top-value methods."}
+library(cowplot)
+plot_grid(p1, p2, nrow = 1, labels = c("A", "B"), rel_widths = c(4, 6))
+```
+
+Similar as Figure 1, Figure 4 visualizes the top 5000 CpGs from diffferent CpG
+categories. For CpGs from CGI, SD gives a very clean image that almost all six
+subtypes can be separated although some of the _RTK I PDGFRA_ samples mixed
+with _Mesenchymal_ subtype. CV can select probes to nicely separate
+_G34_/_IDH_/_RTK II Classic_ but not the others. MAD selects probes which
+generate a more noisy profile compared to SD. Probes selected by ATC generally show very
+similar patterns among all samples, but interestingly, some subtypes can still
+be separated.
+
+From CGI shore to sea, the methylation profile becomes more noisy and some subtypes
+cannot be nicely separated any more. ATC now separate samples into the high-methylation
+and low-methylation groups.
+
+Note in this section, when we mention "subtypes can be separated", we
+refer to the hierarchical clustering applied on samples and visualized on top
+of each heatmap, while it is not based on the consensus clustering.
+
+### {.tabset}
+
+#### Islands
+
+```{r, fig.width = 14, fig.height = 8, fig.cap = "Figure 4A. Top 5000 CpGs from CGI, extracted by different top-value methods."}
+ca = "island"
+mat2 = mat1[ cpg_anno2 == ca, ]
+if(file.exists(qq("GBM_450k_cgi_@{ca}_top_value_list.rds"))) {
+    top_value_list = readRDS(qq("GBM_450k_cgi_@{ca}_top_value_list.rds"))
+} else {
+    top_value_list = list()
+    top_value_list$SD = cola:::get_top_value_method("SD")(mat2)
+    top_value_list$CV = cola:::get_top_value_method("CV")(mat2)
+    top_value_list$MAD = cola:::get_top_value_method("MAD")(mat2)
+    top_value_list$ATC = cola:::get_top_value_method("ATC")(mat2, mc.cores = 4)
+
+    saveRDS(top_value_list, file = qq("GBM_450k_cgi_@{ca}_top_value_list.rds"))
+}
+
+meth_col_fun = colorRamp2(c(0, 0.5, 1), c("blue", "white", "red"))
+grid.newpage()
+pushViewport(viewport(layout = grid.layout(nrow = 2, ncol = 3)))
+for(i in 1:3) {
+    pushViewport(viewport(layout.pos.row = 1, layout.pos.col = i))
+    od = order(top_value_list[[i]], decreasing = TRUE)[1:5000]
+    ht = Heatmap(mat2[od, ], name = "meth", col = meth_col_fun,
+        column_title = qq("top @{length(od)} rows of @{names(top_value_list)[i]}, cpg @{ca}"),
+        show_row_names = FALSE, show_row_dend = FALSE, show_column_names = FALSE,
+        bottom_annotation = HeatmapAnnotation(dkfz_subtype = phenotype$dkfz_subtype, col = anno_col))
+    draw(ht, newpage = FALSE, merge_legend = TRUE)
+    popViewport()
+}
+for(i in 4) {
+    pushViewport(viewport(layout.pos.row = 2, layout.pos.col = 1))
+    od = order(top_value_list[[i]], decreasing = TRUE)[1:5000]
+    ht = Heatmap(mat2[od, ], name = "meth", col = meth_col_fun,
+        column_title = qq("top @{length(od)} rows of @{names(top_value_list)[i]}, cpg @{ca}"),
+        show_row_names = FALSE, show_row_dend = FALSE, show_column_names = FALSE,
+        bottom_annotation = HeatmapAnnotation(dkfz_subtype = phenotype$dkfz_subtype, col = anno_col))
+    draw(ht, newpage = FALSE, merge_legend = TRUE)
+    popViewport()
+}
+pushViewport(viewport(layout.pos.row = 2, layout.pos.col = 2))
+p = grid.grabExpr(top_elements_overlap(top_value_list, top_n = 5000, method = "euler"))
+pushViewport(viewport(x = unit(5, "mm"), just = "left"))
+grid.draw(p)
+popViewport(2)
+```
+
+
+#### Shores
+
+
+```{r, fig.width = 14, fig.height = 8, fig.cap = "Figure 4B. Top 5000 CpGs from CGI shores, extracted by different top-value methods."}
+ca = "shore"
+mat2 = mat1[ cpg_anno2 == ca, ]
+if(file.exists(qq("GBM_450k_cgi_@{ca}_top_value_list.rds"))) {
+    top_value_list = readRDS(qq("GBM_450k_cgi_@{ca}_top_value_list.rds"))
+} else {
+    top_value_list = list()
+    top_value_list$SD = cola:::get_top_value_method("SD")(mat2)
+    top_value_list$CV = cola:::get_top_value_method("CV")(mat2)
+    top_value_list$MAD = cola:::get_top_value_method("MAD")(mat2)
+    top_value_list$ATC = cola:::get_top_value_method("ATC")(mat2, mc.cores = 4)
+
+    saveRDS(top_value_list, file = qq("GBM_450k_cgi_@{ca}_top_value_list.rds"))
+}
+
+meth_col_fun = colorRamp2(c(0, 0.5, 1), c("blue", "white", "red"))
+grid.newpage()
+pushViewport(viewport(layout = grid.layout(nrow = 2, ncol = 3)))
+for(i in 1:3) {
+    pushViewport(viewport(layout.pos.row = 1, layout.pos.col = i))
+    od = order(top_value_list[[i]], decreasing = TRUE)[1:5000]
+    ht = Heatmap(mat2[od, ], name = "meth", col = meth_col_fun,
+        column_title = qq("top @{length(od)} rows of @{names(top_value_list)[i]}, cpg @{ca}"),
+        show_row_names = FALSE, show_row_dend = FALSE, show_column_names = FALSE,
+        bottom_annotation = HeatmapAnnotation(dkfz_subtype = phenotype$dkfz_subtype, col = anno_col))
+    draw(ht, newpage = FALSE, merge_legend = TRUE)
+    popViewport()
+}
+for(i in 4) {
+    pushViewport(viewport(layout.pos.row = 2, layout.pos.col = 1))
+    od = order(top_value_list[[i]], decreasing = TRUE)[1:5000]
+    ht = Heatmap(mat2[od, ], name = "meth", col = meth_col_fun,
+        column_title = qq("top @{length(od)} rows of @{names(top_value_list)[i]}, cpg @{ca}"),
+        show_row_names = FALSE, show_row_dend = FALSE, show_column_names = FALSE,
+        bottom_annotation = HeatmapAnnotation(dkfz_subtype = phenotype$dkfz_subtype, col = anno_col))
+    draw(ht, newpage = FALSE, merge_legend = TRUE)
+    popViewport()
+}
+pushViewport(viewport(layout.pos.row = 2, layout.pos.col = 2))
+p = grid.grabExpr(top_elements_overlap(top_value_list, top_n = 5000, method = "euler"))
+pushViewport(viewport(x = unit(5, "mm"), just = "left"))
+grid.draw(p)
+popViewport(2)
+```
+
+#### Seas
+
+
+```{r, fig.width = 14, fig.height = 8, fig.cap = "Figure 4C. Top 5000 CpGs from CGI seas, extracted by different top-value methods."}
+ca = "sea"
+mat2 = mat1[ cpg_anno2 == ca, ]
+if(file.exists(qq("GBM_450k_cgi_@{ca}_top_value_list.rds"))) {
+    top_value_list = readRDS(qq("GBM_450k_cgi_@{ca}_top_value_list.rds"))
+} else {
+    top_value_list = list()
+    top_value_list$SD = cola:::get_top_value_method("SD")(mat2)
+    top_value_list$CV = cola:::get_top_value_method("CV")(mat2)
+    top_value_list$MAD = cola:::get_top_value_method("MAD")(mat2)
+    top_value_list$ATC = cola:::get_top_value_method("ATC")(mat2, mc.cores = 4)
+
+    saveRDS(top_value_list, file = qq("GBM_450k_cgi_@{ca}_top_value_list.rds"))
+}
+
+meth_col_fun = colorRamp2(c(0, 0.5, 1), c("blue", "white", "red"))
+grid.newpage()
+pushViewport(viewport(layout = grid.layout(nrow = 2, ncol = 3)))
+for(i in 1:3) {
+    pushViewport(viewport(layout.pos.row = 1, layout.pos.col = i))
+    od = order(top_value_list[[i]], decreasing = TRUE)[1:5000]
+    ht = Heatmap(mat2[od, ], name = "meth", col = meth_col_fun,
+        column_title = qq("top @{length(od)} rows of @{names(top_value_list)[i]}, cpg @{ca}"),
+        show_row_names = FALSE, show_row_dend = FALSE, show_column_names = FALSE,
+        bottom_annotation = HeatmapAnnotation(dkfz_subtype = phenotype$dkfz_subtype, col = anno_col))
+    draw(ht, newpage = FALSE, merge_legend = TRUE)
+    popViewport()
+}
+for(i in 4) {
+    pushViewport(viewport(layout.pos.row = 2, layout.pos.col = 1))
+    od = order(top_value_list[[i]], decreasing = TRUE)[1:5000]
+    ht = Heatmap(mat2[od, ], name = "meth", col = meth_col_fun,
+        column_title = qq("top @{length(od)} rows of @{names(top_value_list)[i]}, cpg @{ca}"),
+        show_row_names = FALSE, show_row_dend = FALSE, show_column_names = FALSE,
+        bottom_annotation = HeatmapAnnotation(dkfz_subtype = phenotype$dkfz_subtype, col = anno_col))
+    draw(ht, newpage = FALSE, merge_legend = TRUE)
+    popViewport()
+}
+pushViewport(viewport(layout.pos.row = 2, layout.pos.col = 2))
+p = grid.grabExpr(top_elements_overlap(top_value_list, top_n = 5000, method = "euler"))
+pushViewport(viewport(x = unit(5, "mm"), just = "left"))
+grid.draw(p)
+popViewport(2)
+```
+
+### ATC captures the global methylation difference
+
+According to the discussion in the main manuscript, ATC method works very well
+for the gene expression datasets. However, as shown in previous figures, ATC
+performs the worst. We want to know why ATC features are so different and what
+information they can provide.
+
+Since ATC is based on correlation, in Figure 5, we also scaled the methylation
+by rows by z-score transformation (the right heatmap). For the top 5000 CGI
+probes, although the methylation profile looks very similar among samples,
+there is a very clear pattern that separates samples into two groups after
+z-score transformation (Figure 5A, right heatmap). The two-group
+classification is identified by simply applying k-means clustering on the
+scaled methylation profile and is marked as `km` annotation under the heatmap.
+
+For top 5000 CGI shore probes and CGI sea probes, samples can also be separated
+into two groups after row-scaling. Being different from CGI probes, all the samples
+showing consistent high methylation in one group and consistent low methylation
+in the other group. Also, these two-group classifications are also marked as
+annotation unber each heatmap.
+
+Comparing the `km` annotation to the `dkfz_subtype` annotation, we found,
+the two-group classification for CGI probes has not obvious agreement to the subtypes,
+while for the CGI shores and seas, _IDH_/_Mesenchymal_/_RTK II Classic_ samples show
+relatively high methylation and _K27_/_G34_ samples show relatively low methylation.
+
+### {.tabset}
+
+```{r}
+top_value_list = readRDS("GBM_450k_top_value_list.rds")
+od = order(top_value_list$ATC, decreasing = TRUE)[1:5000]
+km_all = kmeans(scale(t(mat1[od, ])), centers = 2)$cluster
+
+adjust_km_labels = function(mat, km) {
+    mean1 = mean(mat[, km == 1])
+    mean2 = mean(mat[, km == 2])
+    if(mean1 < mean2) {
+        km2 = km
+        km2[km == 1] = 2
+        km2[km == 2] = 1
+    } else {
+        km2 = km
+    }
+    return(km2)
+}
+
+km_all = adjust_km_labels(t(scale(t(mat1[od, ]))), km_all)
+km_col = c("1" = "red", "2" = "green")
+```
+
+#### Islands
+
+```{r, fig.width = 10, fig.height = 5, out.width = "800px", fig.cap = "Figure 5A. Heatmap of the top 5000 CpGs in CGI by ATC methods. Left heatmap: the original methylation values. Right heatmap: the z-scores."}
+ca = "island"
+mat2 = mat1[ cpg_anno2 == ca, ]
+top_value_list = readRDS(qq("GBM_450k_cgi_@{ca}_top_value_list.rds"))
+
+meth_col_fun = colorRamp2(c(0, 0.5, 1), c("blue", "white", "red"))
+z_col_fun = colorRamp2(c(-2, 0, 2), c("green", "white", "red"))
+grid.newpage()
+pushViewport(viewport(layout = grid.layout(nrow = 1, ncol = 2)))
+pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 1))
+od = order(top_value_list$ATC, decreasing = TRUE)[1:5000]
+ht = Heatmap(mat2[od, ], name = "meth", col = meth_col_fun,
+    column_title = qq("top @{length(od)} rows of @{names(top_value_list)[i]}, cpg @{ca}"),
+    show_row_names = FALSE, show_row_dend = FALSE, show_column_names = FALSE,
+    bottom_annotation = HeatmapAnnotation(dkfz_subtype = phenotype$dkfz_subtype, col = anno_col))
+draw(ht, newpage = FALSE, merge_legend = TRUE)
+popViewport()
+pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 2))
+km_island = kmeans(scale(t(mat2[od, ])), centers = 2)$cluster
+km_island = adjust_km_labels(t(scale(t(mat2[od, ]))), km_island)
+ht = Heatmap(t(scale(t(mat2[od, ]))), name = "z-score", col = z_col_fun,
+    column_title = qq("rows are scaled by z-score method"),
+    show_row_names = FALSE, show_row_dend = FALSE, show_column_names = FALSE,
+    bottom_annotation = HeatmapAnnotation(km = km_island, dkfz_subtype = phenotype$dkfz_subtype,
+        col = list(km = km_col, dkfz_subtype = anno_col$dkfz_subtype)))
+draw(ht, newpage = FALSE, merge_legend = TRUE)
+popViewport()
+popViewport()
+```
+
+#### Shores
+
+```{r, fig.width = 10, fig.height = 5, out.width = "800px", fig.cap = "Figure 5B. Heatmap of the top 5000 CpGs in CGI shores by ATC methods. Left heatmap: the original methylation values. Right heatmap: the z-scores."}
+ca = "shore"
+mat2 = mat1[ cpg_anno2 == ca, ]
+top_value_list = readRDS(qq("GBM_450k_cgi_@{ca}_top_value_list.rds"))
+
+meth_col_fun = colorRamp2(c(0, 0.5, 1), c("blue", "white", "red"))
+z_col_fun = colorRamp2(c(-2, 0, 2), c("green", "white", "red"))
+grid.newpage()
+pushViewport(viewport(layout = grid.layout(nrow = 1, ncol = 2)))
+pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 1))
+od = order(top_value_list$ATC, decreasing = TRUE)[1:5000]
+ht = Heatmap(mat2[od, ], name = "meth", col = meth_col_fun,
+    column_title = qq("top @{length(od)} rows of @{names(top_value_list)[i]}, cpg @{ca}"),
+    show_row_names = FALSE, show_row_dend = FALSE, show_column_names = FALSE,
+    bottom_annotation = HeatmapAnnotation(dkfz_subtype = phenotype$dkfz_subtype, col = anno_col))
+draw(ht, newpage = FALSE, merge_legend = TRUE)
+popViewport()
+pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 2))
+km_shore = kmeans(scale(t(mat2[od, ])), centers = 2)$cluster
+km_shore = adjust_km_labels(t(scale(t(mat2[od, ]))), km_shore)
+ht = Heatmap(t(scale(t(mat2[od, ]))), name = "z-score", col = z_col_fun,
+    column_title = qq("rows are scaled by z-score method"),
+    show_row_names = FALSE, show_row_dend = FALSE, show_column_names = FALSE,
+    bottom_annotation = HeatmapAnnotation(km = km_shore, dkfz_subtype = phenotype$dkfz_subtype,
+        col = list(km = km_col, dkfz_subtype = anno_col$dkfz_subtype)))
+draw(ht, newpage = FALSE, merge_legend = TRUE)
+popViewport()
+popViewport()
+```
+
+#### Seas
+
+```{r, fig.width = 10, fig.height = 5, out.width = "800px", fig.cap = "Figure 5C. Heatmap of the top 5000 CpGs in CGI seas by ATC methods. Left heatmap: the original methylation values. Right heatmap: the z-scores."}
+ca = "sea"
+mat2 = mat1[ cpg_anno2 == ca, ]
+top_value_list = readRDS(qq("GBM_450k_cgi_@{ca}_top_value_list.rds"))
+
+meth_col_fun = colorRamp2(c(0, 0.5, 1), c("blue", "white", "red"))
+z_col_fun = colorRamp2(c(-2, 0, 2), c("green", "white", "red"))
+grid.newpage()
+pushViewport(viewport(layout = grid.layout(nrow = 1, ncol = 2)))
+pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 1))
+od = order(top_value_list$ATC, decreasing = TRUE)[1:5000]
+ht = Heatmap(mat2[od, ], name = "meth", col = meth_col_fun,
+    column_title = qq("top @{length(od)} rows of @{names(top_value_list)[i]}, cpg @{ca}"),
+    show_row_names = FALSE, show_row_dend = FALSE, show_column_names = FALSE,
+    bottom_annotation = HeatmapAnnotation(dkfz_subtype = phenotype$dkfz_subtype, col = anno_col))
+draw(ht, newpage = FALSE, merge_legend = TRUE)
+popViewport()
+pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 2))
+km_sea = kmeans(scale(t(mat2[od, ])), centers = 2)$cluster
+km_sea = adjust_km_labels(t(scale(t(mat2[od, ]))), km_sea)
+ht = Heatmap(t(scale(t(mat2[od, ]))), name = "z-score", col = z_col_fun,
+    column_title = qq("rows are scaled by z-score method"),
+    show_row_names = FALSE, show_row_dend = FALSE, show_column_names = FALSE,
+    bottom_annotation = HeatmapAnnotation(km = km_sea, dkfz_subtype = phenotype$dkfz_subtype,
+        col = list(km = km_col, dkfz_subtype = anno_col$dkfz_subtype)))
+draw(ht, newpage = FALSE, merge_legend = TRUE)
+popViewport()
+popViewport()
+```
+
+### 
+
+As for the CpGs in shores and seas, the relative methylation profiles show
+singular one-side pattern, we suspect it is due to the global difference. Thus
+we look at the global methylation distribution of all probes in each CpG
+category. In Figure 6, samples are ordered by the median methylation value.
+The bottom annotations show whether the sample belong to the `km` groups (the
+same as in Figure 5) or the subtypes.
+
+For methylation of CGI probes, the `km` or the subtype classifications have no
+relation to the increasing methylation levels among samples (Figure 6A), while
+for CGI shore/sea probes, samples labelled as `km = 1` have systematic high
+level of methylation. Samples in different subtypes also show different methylation
+levels, e.g. _IDH_ samples show the highest methylation and _K27_/_G34_ show 
+the lowest methylation.
+
+### {.tabset}
+
+```{r}
+mat_subtype = matrix(NA, nrow = length(phenotype$dkfz_subtype), ncol = length(anno_col$dkfz_subtype))
+colnames(mat_subtype) = names(anno_col$dkfz_subtype)
+for(nm in unique(phenotype$dkfz_subtype)) {
+    mat_subtype[phenotype$dkfz_subtype == nm, nm] = nm
+}
+```
+
+#### Islands
+
+```{r, fig.width = 8, fig.height = 6.1, out.width = "600px", fig.cap = "Figure 6A. Global methylation distribution in CpG islands."}
+ca = "island"
+mat2 = mat1[ cpg_anno2 == ca, ]
+ht = densityHeatmap(mat2, column_title = "Islands", show_column_names = FALSE,
+    bottom_annotation = HeatmapAnnotation(km = km_island, dkfz_subtype = mat_subtype, na_col = NA,
+        col = list(km = km_col, dkfz_subtype = anno_col$dkfz_subtype), height = unit(3, "cm")),
+    column_order = order(colMedians(mat2)), ylim = c(0, 1))
+draw(ht, merge_legend = TRUE)
+```
+
+#### Shores
+
+```{r, fig.width = 8, fig.height = 6.1, out.width = "600px", fig.cap = "Figure 6B. Global methylation distribution in CGI shores."}
+ca = "shore"
+mat2 = mat1[ cpg_anno2 == ca, ]
+ht = densityHeatmap(mat2, column_title = "Shores", show_column_names = FALSE,
+    bottom_annotation = HeatmapAnnotation(km = km_shore, dkfz_subtype = mat_subtype, na_col = NA,
+        col = list(km = km_col, dkfz_subtype = anno_col$dkfz_subtype), height = unit(3, "cm")),
+    column_order = order(colMedians(mat2)), ylim = c(0, 1))
+draw(ht, merge_legend = TRUE)
+```
+
+#### Seas
+
+```{r, fig.width = 8, fig.height = 6.1, out.width = "600px", fig.cap = "Figure 6C. Global methylation distribution in CGI seas."}
+ca = "sea"
+mat2 = mat1[ cpg_anno2 == ca, ]
+ht = densityHeatmap(mat2, column_title = "Seas", show_column_names = FALSE,
+    bottom_annotation = HeatmapAnnotation(km = km_sea, dkfz_subtype = mat_subtype, na_col = NA,
+        col = list(km = km_col, dkfz_subtype = anno_col$dkfz_subtype), height = unit(3, "cm")),
+    column_order = order(colMedians(mat2)), ylim = c(0, 1))
+draw(ht, merge_legend = TRUE)
+```
+
+### Different CpG features might give different classifications
+
+As shown in Figure 1 and 4, we can make the conclusion that SD selects better
+probes for subgroup classification. Thus, we extract the consensus
+partitioning results by `SD:skmeans` for the three CpG categories, as well as
+taking all probes. The reason of selecting `skmeans` is because it generates 
+stable partitions. The classes predicted (the number of subgroups are based
+on the `suggest_best_k()` function in _cola_ package) as well as the `dkfz_subtype`
+annotation are visualized in Figure 7. 
+
+We see, `all`/`island`/`shore` generate similar classifications. A subset of
+_Mesenchymal_ samples are classified into the same group as _RTK II Classic_.
+Note the `dkfz_subtype` is based on k-means clustering while ours are based on
+spherical k-means clustering. Interestingly, for the CGI sea probes,
+_Mesenchymal_ and _RTK II Classic_ cannot be distinguishable, and _K27_
+subtype merge some of the samples in _RTK I PDGFRA_ and _IDH_ subtype merges
+the other samples in _RTK I PDGFRA_.
+
+
+```{r, fig.width = 12, fig.height = 2, out.width = "800px", fig.cap = "Figure 7. Partitions from different CpG categories."}
+rl_all = readRDS("/desktop-home/guz/project/development/cola_examples/GBM_450K/GBM_450K_cgi_all_subgroup.rds")
+rl_island = readRDS("/desktop-home/guz/project/development/cola_examples/GBM_450K/GBM_450K_cgi_island_subgroup.rds")
+rl_shore = readRDS("/desktop-home/guz/project/development/cola_examples/GBM_450K/GBM_450K_cgi_shore_subgroup.rds")
+rl_sea = readRDS("/desktop-home/guz/project/development/cola_examples/GBM_450K/GBM_450K_cgi_sea_subgroup.rds")
+
+method = "SD:skmeans"
+class_df = data.frame(
+    all = get_classes(rl_all[method], k = 6)[, 1],
+    all_sil = get_classes(rl_all[method], k = 6)[, 3],
+
+    island = get_classes(rl_island[method], k = 6)[, 1],
+    island_sil = get_classes(rl_island[method], k = 6)[, 3],
+
+    shore = get_classes(rl_shore[method], k = 6)[, 1],
+    shore_sil = get_classes(rl_shore[method], k = 6)[, 3],
+
+    sea = get_classes(rl_sea[method], k = 4)[, 1],
+    sea_sil = get_classes(rl_sea[method], k = 4)[, 3]
+
+)
+
+map = c("1" = 1, "2" = 2, "4" = 4, "3" = 3, "5" = 5, "6" = 6)
+ref_class = as.numeric(map[as.character(class_df$all)])
+class_df$all = relabel_class(class_df$all, ref_class, return_map = FALSE)
+map_island = relabel_class(class_df$island, ref_class)
+class_df$island = as.numeric(map_island[as.character(class_df$island)])
+map_shore = relabel_class(class_df$shore, ref_class)
+class_df$shore = as.numeric(map_shore[as.character(class_df$shore)])
+map_sea = relabel_class(class_df$sea, ref_class); map_sea = map_sea[1:4]
+class_df$sea = as.numeric(map_sea[as.character(class_df$sea)])
+
+adjust_by_transparency = function(col, transparency) {
+    rgb( 1 - (1 - t(col2rgb(col)/255)) * (1 - transparency))
+}
+class_mat = t(as.matrix(class_df[, c(1, 3, 5, 7)]))
+column_order = cola:::column_order_by_group(class_df$all, class_mat)
+
+silhouette_mat = t(as.matrix(class_df[, c(1, 3, 5, 7) + 1]))
+silhouette_mat[silhouette_mat < 0] = 0
+Heatmap(class_mat, name = "Class",
+    col = cola:::brewer_pal_set2_col[1:7], cluster_rows = FALSE,
+    column_order = order(class_df$all, class_df$shore, class_df$sea, phenotype$dkfz_subtype),
+    bottom_annotation = HeatmapAnnotation(dkfz_subtype = phenotype$dkfz_subtype, 
+        col = anno_col, show_legend = TRUE),
+    column_title = qq("partitions from @{method}"),
+    rect_gp = gpar(type = "none"),
+    row_split = c("A", "B", "B", "B"), row_title = NULL,
+    layer_fun = function(j, i, x, y, w, h, fill) {
+        # col = adjust_by_transparency(fill, 1 - pindex(silhouette_mat, j, i))
+        col = fill
+        grid.rect(x, y, w, h, gp = gpar(fill = col, col = col))
+    })
+```
+
+### The cola reports
+
+The HTML reports for cola analysis can be found at following links:
+
+- using all probes: [GBM_450K_cgi_all_subgroup_cola_report](https://jokergoo.github.io/cola_examples/GBM_450K/GBM_450K_cgi_all_subgroup_cola_report/cola_report.html)
+- only CGI probes: [GBM_450K_cgi_island_subgroup_cola_report](https://jokergoo.github.io/cola_examples/GBM_450K/GBM_450K_cgi_island_subgroup_cola_report/cola_report.html)
+- only CGI shore probes: [GBM_450K_cgi_shore_subgroup_cola_report](https://jokergoo.github.io/cola_examples/GBM_450K/GBM_450K_cgi_shore_subgroup_cola_report/cola_report.html)
+- only CGI sea probes: [GBM_450K_cgi_sea_subgroup_cola_report](https://jokergoo.github.io/cola_examples/GBM_450K/GBM_450K_cgi_sea_subgroup_cola_report/cola_report.html)
+
+
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
