@@ -28,6 +28,7 @@ one single sample is separated from one of the big subgroups.
 library(circlize)
 library(ComplexHeatmap)
 library(GetoptLong)
+library(cowplot)
 
 id = "GDS1875"
 res = readRDS(qq("/icgc/dkfzlsdf/analysis/B080/guz/cola_test/GDS/@{id}/@{id}_cola_all.rds"))

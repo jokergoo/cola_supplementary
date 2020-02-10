@@ -1,5 +1,5 @@
 ---
-title: "Golub leukemia dataset analysis - Impact of Row Scaling (Part II)"
+title: "Golub Leukemia Dataset Analysis - Impact of Row Scaling (Part II)"
 author: "Zuguang Gu (z.gu@dkfz.de)"
 date: '`r Sys.Date()`'
 output:
