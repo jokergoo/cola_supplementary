@@ -1,5 +1,5 @@
 
-This repository contains supplementary files for the manuscript 'cola: an R/Bioconductor Package for Consensus Partitioning through a General Framework'.
+This repository contains additional files for the manuscript 'cola: an R/Bioconductor Package for Consensus Partitioning through a General Framework'.
 
 ```{r, results = "asis", echo = FALSE, warning = FALSE}
 rmd_files = scan(pipe("ls */*.Rmd"), what = "character")
@@ -20,5 +20,5 @@ rmd_files = rmd_files[od]
 
 library(GetoptLong)
 
-qqcat("- Supplementary File @{ind}: [@{title}](https://jokergoo.github.io/cola_supplementary/@{gsub('Rmd$', 'html', rmd_files)})\n")
+qqcat("- Additional File @{ind}: [@{title}](https://jokergoo.github.io/cola_supplementary/@{gsub('Rmd$', 'html', rmd_files)})\n")
 ```
