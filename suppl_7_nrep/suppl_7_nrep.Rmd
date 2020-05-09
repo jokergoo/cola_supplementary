@@ -47,8 +47,7 @@ sampling. For each combination of parameters, **cola** ran for 100 times. The sc
 For each dataset, there are four plots:
 
 - Scatter plots showing the variability of the consensus partitioning metrics. Three metrics
-(1-PAC, mean silhouette and the concordance scores) are tested. Also consensus partitionings are
-applied with row sampling and column sampling respectively.
+(1-PAC, mean silhouette and the concordance scores) are tested.
 - Line plots showing the mean concordance between the 100 **cola** runs.
 - Barplots showing the mean concordance of the consensus parititons between 25 samplings and 200 samplings.
 - Scatter plots showing the relation between 1-PAC under 25/200 samplings and the concordance.

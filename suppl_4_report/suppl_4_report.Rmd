@@ -1,5 +1,6 @@
 ---
 title: "Examples of cola Analysis"
+description: "blablabla"
 author: "Zuguang Gu (z.gu@dkfz.de)"
 date: '`r Sys.Date()`'
 output:

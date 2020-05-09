@@ -31,7 +31,11 @@ test_ATC = function(nr1, nr2, nr3, cor1, cor2, cor3, min_cor = 0, beta = 1) {
 	plot.new()
 	par(mar = c(5.1, 5, 2, 1), cex = 0.8)
 	v = NULL
-	plot(NULL, xlim = c(0, 1), ylim = c(0, 1), ylab = "P(X <= x)", xlab = "absolute correlation")
+	if(beta == 1) {
+		plot(NULL, xlim = c(0, 1), ylim = c(0, 1), ylab = "P(X <= x)", xlab = "|correlation|")
+	} else {
+		plot(NULL, xlim = c(0, 1), ylim = c(0, 1), ylab = "P(X <= x)", xlab = "|correlation|^beta")
+	}
 	for(i in 1:ncol(mat)) {
 	    cor_v <- abs(cor(mat[, i, drop = FALSE], mat[, -i, drop = FALSE]))^beta
 	    cor_v = sort(cor_v)
@@ -77,20 +81,21 @@ test_ATC = function(nr1, nr2, nr3, cor1, cor2, cor3, min_cor = 0, beta = 1) {
 }
 ```
 
-For row $i$ in a matrix $\mathbf{M}$, $\mathbf{x}$ is a vector of**the absolute
-correlation** to all other rows, the ATC (ability to correlate to other rows)
-score for row $i$ is defined as:
+For row $i$ in a matrix, denote the variable $X$ as a vector of absolute
+values of the correlation coefficients to all other rows, evaluated at $x$,
+then the ATC score for row $i$ is defined as:
 
-$$ATC_i = 1 - \int_0^1F(x)dx$$
+$$ ATC_i = 1 - \int_0^1F_X(x)dx $$
 
-where $F(x)$ is the cumulative distribution function (CDF) of $x$.
+where $F_X(x)$ is the cumulative distribution function (CDF) of $X$. 
 
-Figure 1 shows the empirical CDF (ECDF) curve of $\mathbf{x}$ for 
-a certain row $i$. The ATC score corresponds to the red area above the ECDF curve. It can be
-imagined that when row $i$ correlates stronger with other rows, the ECDF curve
-shifts more to the right, thus with higher ATC scores.
+Figure 1 illustrates the empirical CDF (eCDF) curve of $X$ for a certain row
+$i$. The ATC score corresponds to the red area above the eCDF curve. It can be
+imagined that when row $i$ correlates stronger with other rows (both
+correlation and anti-correlation), the eCDF curve shifts more to the right,
+thus with higher ATC scores.
 
-```{r, echo = FALSE, fig.width = 5, fig.height = 5, fig.align = "center", fig.cap = "Figure 1. Demonstration of the ATC score"}
+```{r, echo = FALSE, fig.width = 5, fig.height = 5, fig.align = "center", fig.cap = "Figure 1. Demonstration of the ATC method."}
 par(mar = c(4, 4, 1, 1))
 cor_v = c(0.00296, 0.00323, 0.00493, 0.00511, 0.00513, 0.00653, 0.00838, 0.00859, 0.00923, 0.0116, 0.0141, 0.0142, 0.0144, 0.0161, 0.0186, 0.0195, 0.0205, 0.0222, 0.0231, 0.0237, 0.0242, 0.025, 0.0255, 0.0277, 0.028, 0.029, 0.029, 0.0314, 0.0322, 0.0355, 0.0357, 0.0363, 0.0379, 0.0392, 0.0411, 0.0423, 0.0426, 0.0441, 0.0449, 0.046, 0.0501, 0.0508, 0.0529, 0.0536, 0.054, 0.0541, 0.0549, 0.0567, 0.0576, 0.0581, 0.0605, 0.0608, 0.0639, 0.0671, 0.0682, 0.0698, 0.0717, 0.0737, 0.0747, 0.075, 0.0773, 0.0816, 0.0834, 0.0837, 0.0869, 0.0899, 0.0928, 0.0937, 0.0945, 0.0946, 0.0964, 0.0981, 0.099, 0.101, 0.102, 0.102, 0.103, 0.104, 0.106, 0.109, 0.111, 0.115, 0.115, 0.116, 0.116, 0.121, 0.124, 0.127, 0.127, 0.127, 0.133, 0.135, 0.135, 0.135, 0.138, 0.143, 0.144, 0.146, 0.156, 0.16, 0.164, 0.169, 0.173, 0.178, 0.179, 0.179, 0.194, 0.202, 0.211, 0.253, 0.396, 0.429, 0.447, 0.455, 0.457, 0.465, 0.466, 0.477, 0.487, 0.488, 0.498, 0.518, 0.519, 0.522, 0.524, 0.526, 0.528, 0.539, 0.54, 0.541, 0.544, 0.546, 0.548, 0.551, 0.552, 0.556, 0.558, 0.559, 0.565, 0.568, 0.568, 0.574, 0.574, 0.576, 0.576, 0.579, 0.58, 0.582, 0.585, 0.59, 0.591, 0.592, 0.594, 0.596, 0.597, 0.609, 0.614, 0.615, 0.628)
 
@@ -112,21 +117,21 @@ A simulation test is performed to demonstrate the attributes of the ATC method. 
 matrix with 160 rows, 100 columns with random values drawn from a multivariate
 normal distribution is generated. The 160 rows are configured as follows:
 
-1. 100 rows with mean of 0. The covariance matrix is set to 0 and the
-   diagonal with 1;
-2. 10 rows with mean of 0. The covariance matrix is set to 0.8 and the
-   diagonal with 1. This simulates high correlations but in a small group of rows;
-3. 50 rows with mean of 0. The covariance matrix is set to 0.5 and the
-   diagonal with 1. This simulates intermediate correlations but in a large group of
+1. 100 rows with mean of 0. The covariance matrix is set to 0 and set 1 to the
+   diagonal;
+2. 10 rows with mean of 0. The covariance matrix is set to 0.8 and set 1 to the
+   diagonal. This simulates high correlations but in a small group of rows;
+3. 50 rows with mean of 0. The covariance matrix is set to 0.5 and set 1 to the
+   diagonal. This simulates intermediate correlations but in a large group of
    rows.
 
-```{r, echo = FALSE, fig.width = 14, fig.height = 14/4, fig.align = "center", fig.cap = "Figure 2. A simulation test with three groups of rows with different correlation structures"}
+```{r, echo = FALSE, fig.width = 14, fig.height = 14/4, fig.align = "center", fig.cap = "Figure 2. A simulation test with three groups of rows with different correlation structures."}
 set.seed(12345)
 test_ATC(100, 10, 50, 0, 0.8, 0.5)
 ```
 
 The first plot in Figure 2 is the heatmap for the random matrix, split
-by the three groups of rows. In the second plot, they are ECDF curves of the
+by the three groups of rows. In the second plot, they are eCDF curves of the
 correlation of the 160 rows. The third plot is the ATC scores
 for all 160 rows and the fourth plot is the standard deviation for the 160
 rows. Different colors represent different row groups.
@@ -138,10 +143,10 @@ when the number of correlated rows increases, although the correlation value
 itself is relatively small (the green group). This shows ATC method can assign
 higher scores for rows which correlate to more other rows.
 
-Since the ECDF curve monotonically increases from 0 to 1, for intervals with fixed
+Since the eCDF curve monotonically increases from 0 to 1, for intervals with fixed
 width, they contribute more to the ATC scores if they are close to 0 (Figure 3).
 
-```{r, echo = FALSE, fig.width = 5, fig.height = 5, fig.align = "center", fig.cap = "Figure 3. Fixed-width intervals on the ECDF"}
+```{r, echo = FALSE, fig.width = 5, fig.height = 5, fig.align = "center", fig.cap = "Figure 3. Fixed-width intervals in the eCDF."}
 par(mar = c(4, 4, 1, 1))
 cor_v = c(0.00296, 0.00323, 0.00493, 0.00511, 0.00513, 0.00653, 0.00838, 0.00859, 0.00923, 0.0116, 0.0141, 0.0142, 0.0144, 0.0161, 0.0186, 0.0195, 0.0205, 0.0222, 0.0231, 0.0237, 0.0242, 0.025, 0.0255, 0.0277, 0.028, 0.029, 0.029, 0.0314, 0.0322, 0.0355, 0.0357, 0.0363, 0.0379, 0.0392, 0.0411, 0.0423, 0.0426, 0.0441, 0.0449, 0.046, 0.0501, 0.0508, 0.0529, 0.0536, 0.054, 0.0541, 0.0549, 0.0567, 0.0576, 0.0581, 0.0605, 0.0608, 0.0639, 0.0671, 0.0682, 0.0698, 0.0717, 0.0737, 0.0747, 0.075, 0.0773, 0.0816, 0.0834, 0.0837, 0.0869, 0.0899, 0.0928, 0.0937, 0.0945, 0.0946, 0.0964, 0.0981, 0.099, 0.101, 0.102, 0.102, 0.103, 0.104, 0.106, 0.109, 0.111, 0.115, 0.115, 0.116, 0.116, 0.121, 0.124, 0.127, 0.127, 0.127, 0.133, 0.135, 0.135, 0.135, 0.138, 0.143, 0.144, 0.146, 0.156, 0.16, 0.164, 0.169, 0.173, 0.178, 0.179, 0.179, 0.194, 0.202, 0.211, 0.253, 0.396, 0.429, 0.447, 0.455, 0.457, 0.465, 0.466, 0.477, 0.487, 0.488, 0.498, 0.518, 0.519, 0.522, 0.524, 0.526, 0.528, 0.539, 0.54, 0.541, 0.544, 0.546, 0.548, 0.551, 0.552, 0.556, 0.558, 0.559, 0.565, 0.568, 0.568, 0.574, 0.574, 0.576, 0.576, 0.579, 0.58, 0.582, 0.585, 0.59, 0.591, 0.592, 0.594, 0.596, 0.597, 0.609, 0.614, 0.615, 0.628)
 
@@ -160,17 +165,20 @@ abline(v = seq(0.05, 0.95, by = 0.05), lty = 3, col = "grey")
 
 There can be scenarios when a huge number of rows correlate to each other but
 only with very small correlation values. It results in small right-shift of
-the ECDF curves for these rows, compared to the scenario where rows are
+the eCDF curves for these rows, compared to the scenario where rows are
 completely uncorrelated. Since the correlation values are close to zero, these
-small shifts of the ECDF curves results in a relative large increase of ATC
+small shifts of the eCDF curves results in a relative large increase of ATC
 scores.
 
-To decrease such effect, the ATC definition can be modified to:
+To decrease such effect, the ATC definition can be modified to: For row $i$ in
+the matrix, denote the variable $X$ as a vector of absolute values of the
+correlation coefficients to all other rows, evaluated at $x$, and denote $Y = X^\beta$,
+evaluated at $y$, then the ATC score for row $i$ is defined as:
 
-$$ATC_i = (1 - \alpha) - \int_{\alpha}^1F(y)dy$$
+$$ ATC_i = (1-\alpha) - \int_\alpha^1F_Y(y)dy $$
 
-where $y = x^\beta$. Now $ATC_i$ is the red area above ECDF curve only on the right of $y =
-\alpha$. The coefficient $\beta$ is the power added to the absolute
+Where $F_Y(y)$ is the CDF of $Y$. Now $ATC_i$ is the red area above eCDF curve only on the right of 
+$y =\alpha$. The coefficient $\beta$ is the power added to the absolute
 correlations that it decreases more for the smaller correlations. By Default
 $\alpha$ is set to 0 and $\beta$ is set to 1.
 
@@ -178,7 +186,7 @@ We slightly change the previous simulation test that in the first group, we
 set 500 rows with pairwise correlation to 0.1, which generates 560 rows.
 Similarly, there are four plots illustrated in Figure 4.
 
-```{r, echo = FALSE, fig.width = 14, fig.height = 14/4, fig.align = "center", fig.cap = "Figure 4. A similation test with 560 rows"}
+```{r, echo = FALSE, fig.width = 14, fig.height = 14/4, fig.align = "center", fig.cap = "Figure 4. A similation test with 560 rows."}
 set.seed(12345)
 test_ATC(500, 10, 50, 0.1, 0.8, 0.5)
 ```
@@ -190,16 +198,16 @@ to the rows in group 2, the red dots).
 To remove the effect of small correlation, we can set a value larger than 0 to
 $\alpha$, e.g. 0.3:
 
-```{r, echo = FALSE, fig.width = 14, fig.height = 14/4, fig.align = "center", fig.cap = "Figure 5. A similation test, alpha = 0.3"}
+```{r, echo = FALSE, fig.width = 14, fig.height = 14/4, fig.align = "center", fig.cap = "Figure 5. A similation test, alpha = 0.3."}
 set.seed(12345)
 test_ATC(500, 10, 50, 0.1, 0.8, 0.5, min_cor = 0.3)
 ```
 
 In Figure 5, now we see the ATC scores for rows in group 1 decrease.
 
-We can also set $\beta$ to decrease the value for rows in group 1, as shown in Figure 6.
+We can also set $\beta$, e.g. 3, to decrease the value for rows in group 1, as shown in Figure 6.
 
-```{r, echo = FALSE, fig.width = 14, fig.height = 14/4, fig.align = "center", fig.cap = "Figure 6. A similation test, beta = 3"}
+```{r, echo = FALSE, fig.width = 14, fig.height = 14/4, fig.align = "center", fig.cap = "Figure 6. A similation test, beta = 3."}
 set.seed(12345)
 test_ATC(500, 10, 50, 0.1, 0.8, 0.5, beta = 3)
 ```

@@ -35,8 +35,8 @@ add_pdf = function(pdf) {
 }
 ```
 
-This document contains results for testing row and column sampling for consensus partitioning on the five
-datasets ( [Golub leukemia
+This document contains results for comparing row and column sampling for
+consensus partitioning on the five datasets ( [Golub leukemia
 dataset](https://jokergoo.github.io/cola_examples/Golub_leukemia/), [HSMM
 single cell RNASeq
 dataset](https://jokergoo.github.io/cola_examples/HSMM_single_cell), [MCF10CA
@@ -44,15 +44,16 @@ single cell RNASeq
 dataset](https://jokergoo.github.io/cola_examples/MCF10CA_scRNAseq), [Ritz ALL
 dataset](https://jokergoo.github.io/cola_examples/Ritz_ALL) and [TCGA GBM
 microarray dataset](https://jokergoo.github.io/cola_examples/TCGA_GBM)). For
-each dataset, four consensus partition methods (`SD:hclust`, `SD:skmeans`,
+each dataset, four consensus partitioning methods (`SD:hclust`, `SD:skmeans`,
 `ATC:hclust` and `ATC:skmeans`) were applied, and each method ran for 100
-times so that the variability of 1-PAC can be captured. The random sampling was done by rows or by columns. Each individual
-cola run was done with default parameters. The scripts for the analysis can be found
+times so that the variability of 1-PAC can be captured. The random sampling
+was done by rows and by columns. Each individual cola run was done with
+default parameters. The scripts for the analysis can be found
 [here](https://github.com/jokergoo/cola_manuscript/tree/master/test_row_column_resampling).
 
 For each dataset, there are four plots:
 
-1. boxplots that show the distributions of 1-PAC scores with each k (number of subgroups) for each method.
+1. boxplots that show the distributions of 1-PAC scores at each k (number of subgroups) for each method.
 2. mean difference of the 1-PAC score between row-sampling and column-sampling.
 3. heatmaps that directly show the partitions from 100 runs. Each row corresponds to one cola run and 
    the color in the heatmap only corresponds to the subgroup labels, while not the stability of the partitioning in that run.
@@ -62,98 +63,98 @@ For each dataset, there are four plots:
 
 ## Golub leukemia dataset
 
-```{r, fig.cap = "Figure 1. Distribution of 1-PAC scores"}
+```{r, fig.cap = "Figure 1. Distribution of 1-PAC scores."}
 dataset = "Golub_leukemia"
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_row_or_column_resampling_boxplot.pdf"))
 ```
 
-```{r, out.width = "400px", fig.cap = "Figure 2. Mean difference of 1-PAC between row-sampling and column-sampling"}
+```{r, out.width = "400px", fig.cap = "Figure 2. Mean difference of 1-PAC between row-sampling and column-sampling."}
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_row_or_column_resampling_median_diff.pdf"))
 ```
 
-```{r, fig.cap = "Figure 3. Individual partitions from row-sampling or column-sampling"}
+```{r, fig.cap = "Figure 3. Individual partitions from row-sampling or column-sampling."}
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_row_or_column_resampling_heatmap.pdf"))
 ```
 
-```{r, fig.cap = "Figure 4. Concordance of the partitioning by row-sampling or/and column-sampling"}
+```{r, fig.cap = "Figure 4. Concordance of the partitioning by row-sampling or/and column-sampling."}
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_row_or_column_resampling_corcodance.pdf"))
 ```
 
 ## HSMM single cell RNASeq dataset
 
-```{r, fig.cap = "Figure 5. Distribution of 1-PAC scores"}
+```{r, fig.cap = "Figure 5. Distribution of 1-PAC scores."}
 dataset = "HSMM_single_cell"
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_row_or_column_resampling_boxplot.pdf"))
 ```
 
-```{r, out.width = "400px", fig.cap = "Figure 6. Mean difference of 1-PAC between row-sampling and column-sampling"}
+```{r, out.width = "400px", fig.cap = "Figure 6. Mean difference of 1-PAC between row-sampling and column-sampling."}
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_row_or_column_resampling_median_diff.pdf"))
 ```
 
-```{r, fig.cap = "Figure 7. Individual partitions from row-sampling or column-sampling"}
+```{r, fig.cap = "Figure 7. Individual partitions from row-sampling or column-sampling."}
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_row_or_column_resampling_heatmap.pdf"))
 ```
 
-```{r, fig.cap = "Figure 8. Concordance of the partitioning by row-sampling or/and column-sampling"}
+```{r, fig.cap = "Figure 8. Concordance of the partitioning by row-sampling or/and column-sampling."}
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_row_or_column_resampling_corcodance.pdf"))
 ```
 
 
 ## MCF10CA single cell RNASeq dataset
 
-```{r, fig.cap = "Figure 9. Distribution of 1-PAC scores"}
+```{r, fig.cap = "Figure 9. Distribution of 1-PAC scores."}
 dataset = "MCF10CA_scRNAseq"
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_row_or_column_resampling_boxplot.pdf"))
 ```
 
-```{r, out.width = "400px", fig.cap = "Figure 10. Mean difference of 1-PAC between row-sampling and column-sampling"}
+```{r, out.width = "400px", fig.cap = "Figure 10. Mean difference of 1-PAC between row-sampling and column-sampling."}
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_row_or_column_resampling_median_diff.pdf"))
 ```
 
-```{r, fig.cap = "Figure 11. Individual partitions from row-sampling or column-sampling"}
+```{r, fig.cap = "Figure 11. Individual partitions from row-sampling or column-sampling."}
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_row_or_column_resampling_heatmap.pdf"))
 ```
 
-```{r, fig.cap = "Figure 12. Concordance of the partitioning by row-sampling or/and column-sampling"}
+```{r, fig.cap = "Figure 12. Concordance of the partitioning by row-sampling or/and column-sampling."}
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_row_or_column_resampling_corcodance.pdf"))
 ```
 
 ## Ritz ALL dataset
 
-```{r, fig.cap = "Figure 13. Distribution of 1-PAC scores"}
+```{r, fig.cap = "Figure 13. Distribution of 1-PAC scores."}
 dataset = "Ritz_ALL"
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_row_or_column_resampling_boxplot.pdf"))
 ```
 
-```{r, out.width = "400px", fig.cap = "Figure 14. Mean difference of 1-PAC between row-sampling and column-sampling"}
+```{r, out.width = "400px", fig.cap = "Figure 14. Mean difference of 1-PAC between row-sampling and column-sampling."}
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_row_or_column_resampling_median_diff.pdf"))
 ```
 
-```{r, fig.cap = "Figure 15. Individual partitions from row-sampling or column-sampling"}
+```{r, fig.cap = "Figure 15. Individual partitions from row-sampling or column-sampling."}
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_row_or_column_resampling_heatmap.pdf"))
 ```
 
-```{r, fig.cap = "Figure 16. Concordance of the partitioning by row-sampling or/and column-sampling"}
+```{r, fig.cap = "Figure 16. Concordance of the partitioning by row-sampling or/and column-sampling."}
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_row_or_column_resampling_corcodance.pdf"))
 ```
 
 
 ## TCGA GBM microarray dataset
 
-```{r, fig.cap = "Figure 17. Distribution of 1-PAC scores"}
+```{r, fig.cap = "Figure 17. Distribution of 1-PAC scores."}
 dataset = "TCGA_GBM"
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_row_or_column_resampling_boxplot.pdf"))
 ```
 
-```{r, out.width = "400px", fig.cap = "Figure 18. Mean difference of 1-PAC between row-sampling and column-sampling"}
+```{r, out.width = "400px", fig.cap = "Figure 18. Mean difference of 1-PAC between row-sampling and column-sampling."}
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_row_or_column_resampling_median_diff.pdf"))
 ```
 
-```{r, fig.cap = "Figure 19. Individual partitions from row-sampling or column-sampling"}
+```{r, fig.cap = "Figure 19. Individual partitions from row-sampling or column-sampling."}
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_row_or_column_resampling_heatmap.pdf"))
 ```
 
-```{r, fig.cap = "Figure 20. Concordance of the partitioning by row-sampling or/and column-sampling"}
+```{r, fig.cap = "Figure 20. Concordance of the partitioning by row-sampling or/and column-sampling."}
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_row_or_column_resampling_corcodance.pdf"))
 ```
 

@@ -104,8 +104,8 @@ variance (CV), median absolute deviation (MAD) and ATC (ability to correlate
 to other rows) scores are extracted respectively. Additionally, CpG probes
 are also extracted based on two variants of ATC method:
 
-- `ATC_cgi_anno`: when calculating ATC score for the $i^{th}$ CpG probe, only the 
-  probes which have the same CpG annotation as $CpG_i$ are used. This method
+- `ATC_cgi_anno`: when calculating ATC score for the i<sup>th</sup> CpG probe, only the 
+  probes which have the same CpG annotation as the i<sup>th</sup> CpG are used. This method
   aims to remove the effect of different methylation patterns due to CpGs in different CpG categories.
 - `ATC_SD`: this score is calculated as the mean rank of the rank by ATC
   scores and by SD scores, i.e. `rank(rank(ATC) + rank(SD))`. This method aims
@@ -116,12 +116,12 @@ provided by [the *IlluminaHumanMethylation450kanno.ilmn12.hg19* package](https:/
 CpG categories are:
 
 - *CpG islands* (CGI).
-- *CGI shores* The CpG shore is defined as the CpG sites 2kb from CpG
+- *CGI shores*: The CpG shore is defined as the CpG sites 2kb from CpG
   islands.
-- *CGI seas* All other CpG sites that do not belong to CpG islands or CGI shores.
+- *CGI seas*: All other CpG sites that do not belong to CpG islands or CGI shores.
   In the annotation from **IlluminaHumanMethylation450kanno.ilmn12.hg19** package, there
   is also CGI shelf annotation. In this analysis, for simplicity, we merge CGI
-  shelf and CGI sea to a same category.
+  shelf and CGI sea to a same category because they show very similar patterns.
 
 Figure 1 visualizes the methylation profile for the top 5000 CpG probes
 extracted from different top-value methods. At the bottom of each heatmap is
@@ -129,12 +129,12 @@ an annotation (`dkfz_subtype`) from [the orignial
 study](http://dx.doi.org/10.1016/j.ccr.2012.08.024) where the subtypes were
 predicted by top 8000 genes with the highest SD scores and by k-means
 consensus clustering. In general, the top 5000 CpG probes by SD, CV and MAD
-show distinct methylation patterns between subtypes. CpG probes by SD can
-separate all six subtypes which is expected because the original subtypes were
-also based on probes with top SD scores. Probes by CV can separate _G34_,
-_IDH_, _K27_ and _RTK II Classic_ subtypes but not the other two. SD and MAD
-extract more similar CpG probes (Figure 2) while CV tends to extract probes
-with lower methylation in general.
+show distinct methylation patterns between subtypes (heatmaps in the first
+row). CpG probes by SD can separate all six subtypes which is expected because
+the original subtypes were also based on probes with top SD scores. Probes by
+CV can separate _G34_, _IDH_, _K27_ and _RTK II Classic_ subtypes but not the
+other two. SD and MAD extract more similar CpG probes (Figure 2) while CV
+tends to extract probes with lower methylation in general.
 
 
 As a comparison, top 5000 CpG probes extracted by ATC-related methods have
@@ -284,7 +284,7 @@ From CGI shore to sea, the methylation profile becomes more noisy and some subty
 cannot be nicely separated any more. ATC now separate samples into the high-methylation
 and low-methylation groups.
 
-Note in this section, when we mention "subtypes can be separated", we
+Note in the discussion on Figure 4, when we mention "subtypes can be separated", we
 refer to the hierarchical clustering applied on samples and visualized on top
 of each heatmap, while it is not based on the consensus clustering.
 

@@ -1,5 +1,5 @@
 ---
-title: "Golub Leukemia Dataset Analysis - Impact of Row Scaling (Part II)"
+title: "Golub Leukemia Dataset Analysis - Impact of Row Scaling (Three-group Classification)"
 author: "Zuguang Gu (z.gu@dkfz.de)"
 date: '`r Sys.Date()`'
 output:
@@ -45,97 +45,133 @@ library(cola)
 res_list_1 = readRDS("/desktop-home/guz/project/development/cola_examples/Golub_leukemia/Golub_leukemia_subgroup.rds")
 res_list_2 = readRDS("/desktop-home/guz/project/development/cola_examples/Golub_leukemia/Golub_leukemia_subgroup_unscaled.rds")
 # adjust labels 2 -> 1, 1 -> 2 for k = 3
-new_class = res_list_2@consensus_class$`3`$class_df[, "class"]
-new_class[new_class == 1] = -1
-new_class[new_class == 2] = 1
-new_class[new_class == -1] = 2
-res_list_2@consensus_class$`3`$class_df[, "class"] = new_class
+# new_class = res_list_2@consensus_class$`3`$class_df[, "class"]
+# new_class[new_class == 1] = -1
+# new_class[new_class == 2] = 1
+# new_class[new_class == -1] = 2
+# res_list_2@consensus_class$`3`$class_df[, "class"] = new_class
 
-new_membership = res_list_2@consensus_class$`3`$membership
-new_membership = new_membership[, c(2, 1, 3)]
-colnames(new_membership) = paste0("p", 1:3)
-res_list_2@consensus_class$`3`$membership = new_membership
+# new_membership = res_list_2@consensus_class$`3`$membership
+# new_membership = new_membership[, c(2, 1, 3)]
+# colnames(new_membership) = paste0("p", 1:3)
+# res_list_2@consensus_class$`3`$membership = new_membership
 
-new_class = res_list_2@consensus_class$`2`$class_df[, "class"]
-new_class[new_class == 1] = -1
-new_class[new_class == 2] = 1
-new_class[new_class == -1] = 2
-res_list_2@consensus_class$`2`$class_df[, "class"] = new_class
+# new_class = res_list_2@consensus_class$`2`$class_df[, "class"]
+# new_class[new_class == 1] = -1
+# new_class[new_class == 2] = 1
+# new_class[new_class == -1] = 2
+# res_list_2@consensus_class$`2`$class_df[, "class"] = new_class
 
-new_membership = res_list_2@consensus_class$`2`$membership
-new_membership = new_membership[, c(2, 1)]
-colnames(new_membership) = paste0("p", 1:2)
-res_list_2@consensus_class$`2`$membership = new_membership
+# new_membership = res_list_2@consensus_class$`2`$membership
+# new_membership = new_membership[, c(2, 1)]
+# colnames(new_membership) = paste0("p", 1:2)
+# res_list_2@consensus_class$`2`$membership = new_membership
 
-for(i in seq_along(res_list_2@list)) {
-	res = res_list_2@list[[i]]
+# for(i in seq_along(res_list_2@list)) {
+# 	res = res_list_2@list[[i]]
 	
-	new_class = res@object_list$`3`$class_df[, "class"]
-	new_class[new_class == 1] = -1
-	new_class[new_class == 2] = 1
-	new_class[new_class == -1] = 2
-	res@object_list$`3`$class_df[, "class"] = new_class
+# 	new_class = res@object_list$`3`$class_df[, "class"]
+# 	new_class[new_class == 1] = -1
+# 	new_class[new_class == 2] = 1
+# 	new_class[new_class == -1] = 2
+# 	res@object_list$`3`$class_df[, "class"] = new_class
 	
-	new_membership = res@object_list$`3`$membership
-	new_membership = new_membership[, c(2, 1, 3)]
-	colnames(new_membership) = paste0("p", 1:3)
-	res@object_list$`3`$membership = new_membership
+# 	new_membership = res@object_list$`3`$membership
+# 	new_membership = new_membership[, c(2, 1, 3)]
+# 	colnames(new_membership) = paste0("p", 1:3)
+# 	res@object_list$`3`$membership = new_membership
 
-	new_membership_each = res@object_list$`3`$membership_each
-	new_membership_each[new_membership_each == 1] = -1
-	new_membership_each[new_membership_each == 2] = 1
-	new_membership_each[new_membership_each == -1] = 2
-	res@object_list$`3`$membership_each = new_membership_each
+# 	new_membership_each = res@object_list$`3`$membership_each
+# 	new_membership_each[new_membership_each == 1] = -1
+# 	new_membership_each[new_membership_each == 2] = 1
+# 	new_membership_each[new_membership_each == -1] = 2
+# 	res@object_list$`3`$membership_each = new_membership_each
 
-	new_class = res@object_list$`2`$class_df[, "class"]
-	new_class[new_class == 1] = -1
-	new_class[new_class == 2] = 1
-	new_class[new_class == -1] = 2
-	res@object_list$`2`$class_df[, "class"] = new_class
+# 	new_class = res@object_list$`2`$class_df[, "class"]
+# 	new_class[new_class == 1] = -1
+# 	new_class[new_class == 2] = 1
+# 	new_class[new_class == -1] = 2
+# 	res@object_list$`2`$class_df[, "class"] = new_class
 	
-	new_membership = res@object_list$`2`$membership
-	new_membership = new_membership[, c(2, 1)]
-	colnames(new_membership) = paste0("p", 1:2)
-	res@object_list$`2`$membership = new_membership
+# 	new_membership = res@object_list$`2`$membership
+# 	new_membership = new_membership[, c(2, 1)]
+# 	colnames(new_membership) = paste0("p", 1:2)
+# 	res@object_list$`2`$membership = new_membership
 
-	new_membership_each = res@object_list$`2`$membership_each
-	new_membership_each[new_membership_each == 1] = -1
-	new_membership_each[new_membership_each == 2] = 1
-	new_membership_each[new_membership_each == -1] = 2
-	res@object_list$`2`$membership_each = new_membership_each
+# 	new_membership_each = res@object_list$`2`$membership_each
+# 	new_membership_each[new_membership_each == 1] = -1
+# 	new_membership_each[new_membership_each == 2] = 1
+# 	new_membership_each[new_membership_each == -1] = 2
+# 	res@object_list$`2`$membership_each = new_membership_each
 
-	res_list_2@list[[i]] = res
-}
+# 	res_list_2@list[[i]] = res
+# }
 ```
 
-In the two-group classification, AML samples are basically clustered together tightly no matter rows 
-are scaled are not. The big overlap between also due to the difference between AML samples and ALL samples
-or at least a subset of ALL samples. As we observed from cola results, samples can also be separated into three
-groups where ALL samples are separated into two groups.
+In [the two-group classification](../suppl_10_row_scaling_Golub_2groups/suppl_10_row_scaling_Golub_2groups.html),
+AML samples are basically clustered together no matter rows are scaled are
+not. Samples can also be separated into
+three groups where ALL samples are separated into two subgroups.
 
-### Consensus heatmaps three groups {.tabset}
+### Consensus heatmaps for three subgroups {.tabset}
 
-In the three-group classification, when rows are scaled, only `ATC:skmeans` generates stable partition with 1-PAC score 0.96, while when rows are not scaled, none method generates stable partition.
+In the three-group classification, when rows are scaled, only `ATC:skmeans`
+generates stable partition (1-PAC score = 0.96), while when rows are not
+scaled, no method generates stable partitions, as shown in Table 1 and Figure 1.
+
+<style>
+table {
+  border-collapse: collapse;
+}
+
+table, td, th {
+  border: 1px solid grey;
+}
+
+td, th {
+  padding: 2px 8px;
+}
+</style>
+
+```{r, results = "asis"}
+tb1 = get_stats(res_list_1, k = 3)
+tb2 = get_stats(res_list_2, k = 3)
+tb = data.frame(tb1[, "1-PAC"], tb2[, "1-PAC"])
+tb = tb[order(tb[, 1] > 0.9, tb[, 2], decreasing = TRUE), ]
+tb[, 1] = round(tb[, 1], 2)
+tb[, 2] = round(tb[, 2], 2)
+
+library(kableExtra)
+tb[, 1] = cell_spec(tb[, 1], "html", color = ifelse(tb[, 1] >= 0.9, "red", "black"))
+tb[, 2] = cell_spec(tb[, 2], "html", color = ifelse(tb[, 2] >= 0.9, "red", "black"))
+knitr::kable(tb, col.names = c("Rows are scaled", "Rows are unscaled"),  format = "html", table.attr = "style='width:50%; margin:auto;'", caption = "Table 1. 1-PAC scores of the consensus partitioning under each method (k = 3). Partitions with 1-PAC > 0.9 (numbers in red) are considered as stable partitions.", escape = FALSE)
+```
+
+<br>
+<br>
 
 #### Rows are scaled
 
-```{r, fig.width = 12, fig.height = 8, fig.cap = "Figure 8A. Consensus heatmaps with k = 3"}
+```{r, fig.width = 12, fig.height = 8, fig.cap = "Figure 1A. Consensus heatmaps with three groups. Matrix rows are scaled."}
 collect_plots(res_list_1, k = 3, anno = anno, anno_col = anno_col)
 ```
 
 #### Rows are unscaled
 
-```{r, fig.width = 12, fig.height = 8, fig.cap = "Figure 8B. Consensus heatmaps with k = 3"}
+```{r, fig.width = 12, fig.height = 8, fig.cap = "Figure 1B. Consensus heatmaps with three groups. Matrix rows are unscaled."}
 collect_plots(res_list_2, k = 3, anno = anno, anno_col = anno_col)
 ```
 
 ###
 
-We pick the three-group classification from `ATC:skmeans` for the scaled case, and ...
-On the other hand, the original Golub study classify ALL samples into B-cell and T-cell groups by SOM method.
-Note their method was applied on the whole expression matrix that are not scaled.
+We pick the three-group classification from `ATC:skmeans` for the scaled case
+because it is the only stable partition, and pick `SD:skmeans` for the
+unscaled case because it has the highest 1-PAC score although it is not a
+stable partition. Besides the AML/ALL annotation, the original Golub study
+also provides B-cell/T-cell annotation for the ALL samples. The cola
+classifications and the annotations are visualized in Figure 2.
 
-```{r, fig.height = 1, fig.width = 8, fig.cap = "Figure 10."}
+```{r, fig.height = 1, fig.width = 8, fig.cap = "Figure 2. Conseusus partitions from ATC:skmeans and SD:skmeans methods."}
 cl1 = get_classes(res_list_1["ATC:skmeans"], k = 3)[, 1]
 cl2 = get_classes(res_list_2["SD:skmeans"], k = 3)[, 1]
 
@@ -145,44 +181,67 @@ ht = Heatmap(rbind("ATC:skeamns, scaled" = cl1, "SD:skmeans, unscaled" = cl2), n
 draw(ht)
 ```
 
-The two classifications are both separated...
+To make it easier to describe, we term the classification from the scaled
+matrix as $C_{s, 3}$ (or C_{s,3} if it cannot be rendered as math symbols) 
+and the classification from the unscaled matrix as $C_{u,3}$ (or C_{u,3}).
 
+In Figure 2, we can observe that both classification $C_{s, 3}$ and $C_{u, 3}$
+separate ALL samples into two groups, but the classifications are different.
+$C_{u,3}$ separates ALL samples into two groups that fit very well with
+the B-cell/T-cell annotation while $C_{s, 3}$ gives a new classification.
+Note in the Golub study, the B-cell/T-cell classification on ALL samples 
+were based on SOM on the unscaled matrix, so it is expected that
+$C_{u,3}$ agrees on the B-cell/T-cell classification, also there were
+no stability accessment on the classification in the original study.
 
-```{r, fig.width = 14, fig.height = 7}
+In the PCA plots in Fgiure 3, all three groups are separated very well
+under $C_{s, 3}$, while group 2 and group3 can hardly be separated under
+$C_{u, 3}$.
+
+```{r, fig.width = 14, fig.height = 7, fig.cap = "Figure 3. PCA plots for visualizing the two-group classification. Classification on the left plot is from $C_{s,3}$ and on the right is from $C_{u,3}$."}
 p1 = ~dimension_reduction(res_list_1["ATC:skmeans"], k = 3, method = "PCA")
 p2 = ~dimension_reduction(res_list_2["SD:skmeans"], k = 3, method = "PCA", scale_rows = FALSE)
 plot_grid(p1, p2, nrow = 1,labels = c("A", "B"))
 ```
 
 
-
 ### Signature genes
 
+Next we look at the significantly expressed genes under the two classifications, 
+illustrated in Figure 4. Both classifications give amount of sigature genes, which
+is mainly due to the difference between ALL and AML. To see how different
+methods affect the classifiction on ALL samples, we should only look at the ALL samples,
+as described in the next section. 
 
 ### {.tabset}
 
-#### ATC:skmeans, rows are scaled
+#### Rows are scaled
 
-```{r, fig.width = 8, fig.height = 8, out.width = "600px", fig.cap = "Figure 11A"}
+```{r, fig.width = 8, fig.height = 8, out.width = "600px", fig.cap = "Figure 4A. Signature genes from C_{s,3}."}
 tb1 = get_signatures(res_list_1["ATC:skmeans"], k = 3, anno = anno, anno_col = anno_col, simplify = TRUE)
 ```
 
-#### SD:skmeans, row are unscaled
+#### Row are unscaled
 
-```{r, fig.width = 8, fig.height = 8, out.width = "600px", fig.cap = "Figure 11B"}
+```{r, fig.width = 8, fig.height = 8, out.width = "600px", fig.cap = "Figure 4B. Signature genes from C_{u,3}."}
 tb2 = get_signatures(res_list_2["SD:skmeans"], k = 3, anno = anno, anno_col = anno_col, simplify = TRUE, scale_rows = TRUE)
 ```
 
 
 ### Only look at ALL samples
 
-The overlap between the two sets of classification becomes large. We .. it due to the difference
-from AML group.
+We remove the samples with class label 1 (which corresponds to AML samples)
+in both classifications, and we apply t-test between group 2 and group 3 samples.
+The significant genes under the two classifications are visualized as heatmaps
+in Figure 5.
 
-For the classification.. we removed the samples with label 1 in either classifications. ANd we applied
-t-test between group 2 and group 3 ...
+Since now we only look at the two groups in the two classifications, we modify
+the symbols of the two classification to $C^{(2)}_{s,3}$ and $C^{(2)}_{u,3}$.
 
-```{r, fig.width = 12, fig.height = 6, fig.cap = "Figure 13."}
+A direct conclusion from Figure 5 is there are far more significant genes under
+$C^{(2)}_{s,3}$ (1217 genes) than $C^{(2)}_{u,3}$ (245 genes).
+
+```{r, fig.width = 12, fig.height = 6, fig.cap = "Figure 5. Significant genes between group 2 and 3 in the two classifications. Left: from $C^{(2)}_{s,3}$, right: from $C^{(2)}_{u,3}$."}
 ind1 = cl1 != 1
 
 ind2 = cl2 != 1
@@ -220,29 +279,37 @@ od2 = row_order(ht2)
 plot_grid(p1, p2, nrow = 1, labels = c("A", "B"))
 ```
 
-```{r, fig.width = 8, fig.height = 6}
+Since Figure 5 only shows the relative expression (the scaled expression), in Figure 6,
+we check the distribution of the absolute expression level of the signature genes
+in the two classifications, visualized in Figure 6. Figure 6 shows both signature genes
+are more enriched in the highly expressed genes, where signatures from $C^{(2)}_{s,3}$
+also cover genes with moderate expression levels.
+
+```{r, fig.width = 8, fig.height = 6, fig.cap = "Figure 6. Distribution of the absolute expression of signature genes. A and C: genes are ordered based on their base mean (mean expression among all samples) where significant genes are marked in blue and red. B and D: number of signatures that fall in every 20-gene interval, the same ordering on x-axes as Figure A and C."}
 par(mfrow = c(2, 2), mar = c(2, 4, 4, 1))
-s = rowSds(get_matrix(res_list_1))
+s = rowMeans(get_matrix(res_list_1))
 s_rk = structure(rank(s), names = names(s))
-plot(s_rk, s, type = "h", col = "grey", xlim = c(0, 4200), xlab = "", ylab = "SD score")
+plot(s_rk, s, type = "h", col = "grey", xlim = c(0, 4200), xlab = "", ylab = "Base mean", main = "A) scaled, genes are ordered by base mean")
 nm = rownames(mat2)[ od2[[1]] ]
 lines(s_rk[nm], s[nm], col = "blue", type = "h")
-hist(s_rk[nm], nclass = 20, xlim = c(0, 4200), xlab = "")
+hist(s_rk[nm], nclass = 21, xlim = c(0, 4200), xlab = "", main = "B) scaled, #signatures in every 20-gene bins")
 
-plot(s_rk, s, type = "h", col = "grey", xlim = c(0, 4200), xlab = "", ylab = "SD score")
+plot(s_rk, s, type = "h", col = "grey", xlim = c(0, 4200), xlab = "", ylab = "Base mean", main = "C) unscaled, genes are ordered by base mean")
 nm = rownames(mat2)[ od2[[2]] ]
 lines(s_rk[nm], s[nm], col = "red", type = "h")
-hist(s_rk[nm], nclass = 20, xlim = c(0, 4200), xlab = "")
+hist(s_rk[nm], nclass = 21, xlim = c(0, 4200), xlab = "", main = "D) unscaled, #signatures in every 20-gene bins")
 ```
 
-If look at the overlap between ... the two sets are quite exclusive.
+The two sets of signature genes have very small overlap, illustrated in Figure 7.
 
-```{r, fig.width = 8, fig.height = 3, fig.cap = "Figure 14"}
+```{r, fig.width = 8, fig.height = 3, fig.cap = "Figure 7. Overlap of signature genes in $C^{(2)}_{s,3}$ and $C^{(2)}_{u,3}$."}
 plot(euler(list(scaled = which(t1$fdr < 0.05), unscaled = which(t2$fdr < 0.05))), quantities = TRUE)
 ```
 
-Since now the two sets of signatures are ... we next check the biological functions that are enriched
-in the two sets of genes.
+Similar as the analysis in [the two-group classification](../suppl_10_row_scaling_Golub_2groups/suppl_10_row_scaling_Golub_2groups.html), we check the biological functions that are enriched
+in the two sets of signature genes from $C^{(2)}_{s,3}$ and $C^{(2)}_{u,3}$. Mainly because of
+the high amount of signature genes from $C^{(2)}_{s,3}$, it has far more enriched GO functions
+than $C^{(2)}_{u,3}$ (Figure 8).
 
 ```{r}
 library(hu6800.db)
@@ -257,96 +324,52 @@ tb2 = functional_enrichment(rownames(mat1)[unlist(od2)], id_mapping = id_mapping
 tb2 = tb2[tb2$Count >= 5, , drop = FALSE]
 ```    
 
-```{r, fig.width = 10, fig.height = 6}
+```{r, fig.width = 12, fig.height = 7, fig.cap = "Figure 8. Gene ontology enrichment on the two sets of signature genes illustrated in Figure 5."}
 ago = c(rownames(tb1), rownames(tb2))
 ago = unique(ago)
 pm = matrix(1, nrow = length(ago), ncol = 2)
 rownames(pm) = ago
-colnames(pm) = c("C_{s,3}", "C_{u,3}")
+colnames(pm) = c("C^{(2)}_{s,3}", "C^{(2)}_{u,3}")
 pm[tb1$ID, 1] = tb1$p.adjust
 pm[tb2$ID, 2] = tb2$p.adjust
 
 fdr_cutoff = 0.01
 pm = pm[apply(pm, 1, function(x) any(x < fdr_cutoff)), ]
 all_go_id = rownames(pm)
-go_name = c(structure(tb1$Description, names = tb1$ID),
-	        structure(tb2$Description, names = tb2$ID))
+col_fun_p = colorRamp2(c(0, -log10(fdr_cutoff), 4), c("green", "white", "red"))
+ht_fdr = Heatmap(-log10(pm), col = col_fun_p, name = "FDR",
+	show_row_names = FALSE, cluster_columns = FALSE,
+	border = "black", column_title = "FDR",
+	heatmap_legend_param = list(at = c(0, -log10(fdr_cutoff), 4), 
+		labels = c("1", fdr_cutoff, "<0.0001")),
+	width = unit(1.5, "cm"))
 
-# code is also available at:
-# https://github.com/jokergoo/simplifyGO/blob/675c19a09ccd76af350a5cc50b1730a0f77fc6e3/R/split.R
-source("/desktop-home/guz/project/development/simplifyGO/R/split.R")
-library(GOSemSim)
-library(dendextend)
-library(digest)
+library(simplifyEnrichment)
+sim_mat = GO_similarity(all_go_id)
+pm = pm[rownames(sim_mat), , drop = FALSE]
+col_fun_p = colorRamp2(c(0, -log10(fdr_cutoff), 4), c("green", "white", "red"))
+ht_fdr = Heatmap(-log10(pm), col = col_fun_p, name = "FDR",
+	show_row_names = FALSE, cluster_columns = FALSE,
+	border = "black", column_title = "FDR",
+	heatmap_legend_param = list(at = c(0, -log10(fdr_cutoff), 4), 
+		labels = c("1", fdr_cutoff, "<0.0001")),
+	width = unit(1.5, "cm"),
+	column_labels = gt_render(c("*C*<sup>(2)</sup><sub>s,3</sub>", "*C*<sup>(2)</sup><sub>u,3</sub>")))
 
-mat = get_GO_sim_mat(all_go_id, "BP")
-pm = pm[rownames(mat), ]
-set.seed(123)
-go_similarity_analysis = function(mat, pm, l = rep(TRUE, nrow(mat)), cutoff = 0.85) {
-	mat = mat[l, l, drop = FALSE]
-	pm = pm[l, , drop = FALSE]
-
-	dend = cluster_mat(mat)
-	# plot_dend(dend, mat, cutoff = 0.85)
-
-	cl = as.character(split_dend(dend, cutoff = cutoff))
-	cl_tb = table(cl)
-	cl[cl %in% names(cl_tb[cl_tb <= 5])] = "0"
-	cl = factor(cl, levels = c(setdiff(names(sort(table(cl), decreasing = TRUE)), "0"), "0"))
-
-	ht = Heatmap(mat, col = colorRamp2(c(0, 1), c("white", "red")),
-		name = "Similarity",
-		show_row_names = FALSE, show_column_names = FALSE, 
-		show_row_dend = FALSE, show_column_dend = FALSE,
-		# cluster_row_slices = FALSE, cluster_column_slices = FALSE,
-		row_split = cl, column_split = cl, 
-		border = "black", row_title = NULL,
-		row_gap = unit(0, "mm"), column_gap = unit(0, "mm"),
-		column_title = qq("GO similarity, @{nrow(mat)} terms"))
-
-	col_fun_p = colorRamp2(c(0, -log10(fdr_cutoff), 4), c("green", "white", "red"))
-	ht = Heatmap(-log10(pm), col = col_fun_p, name = "FDR",
-		show_row_names = FALSE, cluster_columns = FALSE,
-		border = "black", column_title = "FDR",
-		heatmap_legend_param = list(at = c(0, -log10(fdr_cutoff), 4), labels = c("1", fdr_cutoff, "<0.0001")),
-		width = unit(1.5, "cm")) + ht
-
-	index = tapply(1:nrow(mat), cl, function(index) {
-		mm = mat[index, index, drop = FALSE]
-		if(length(index)/nrow(mat) > 0.16) {
-			km = kmeans(mm, centers = 3)$cluster
-			index[unlist(tapply(1:nrow(mm), km, function(ind) {
-				 ind[which.max(rowMeans(mm[ind, ind, drop = FALSE]))]
-			}))]
-		} else if(length(index)/nrow(mat) > 0.08) {
-			km = kmeans(mm, centers = 2)$cluster
-			index[unlist(tapply(1:nrow(mm), km, function(ind) {
-				 ind[which.max(rowMeans(mm[ind, ind, drop = FALSE]))]
-			}))]
-		} else {
-			index[which.max(rowMeans(mat[index, index, drop = FALSE]))]
-		}
-	})
-	index = unlist(index)
-	index = index[names(index) != "0"]
-	labels = go_name[rownames(mat)[index]]
-	labels = sapply(labels, function(x) {
-		x2 = strwrap(x, width = 80)
-		if(length(x2) > 1) {
-			x2[2:length(x2)] = paste0("  ", x2[2:length(x2)])
-		}
-		paste(x2, collapse = "\n")
-	})
-	ht = ht + rowAnnotation(mark = anno_mark(at = index, labels = labels,
-		labels_gp = gpar(fontsize = 10)))
-	draw(ht, main_heatmap = "Similarity", ht_gap = unit(c(2, 0), "mm"), heatmap_legend_side = "left")
-}
-go_similarity_analysis(mat, pm, cutoff = 0.85)
+invisible(simplifyGO(sim_mat, ht_list = ht_fdr, word_cloud_grob_param = list(max_width = 120), verbose = FALSE))
 ```
+
+
+### Conclusion
+
+As conclusions, it seems the classification from $C^{(2)}_{s,3}$ is more reasonable because
+there are many signature genes as well as enriched biolofical functions, which might
+provide a new and different view to the B-cell/T-cell classification.
+
 
 ### Gene ontology enrichment {.tabset}
 
-#### C_{s,3}
+#### $C^{(2)}_{s,3}$  (`r sum(tb1$p.adjust <= fdr_cutoff)` terms)
 
 ```{r, results = "markup"}
 # tb1 = functional_enrichment(rownames(mat1)[od1[[1]]], id_mapping = id_mapping, 
@@ -370,7 +393,7 @@ tb1$geneID = NULL
 kable(tb1[tb1$p.adjust <= fdr_cutoff, , drop = FALSE], digits = 4, row.names = FALSE)
 ```
 
-#### C_{u,3}
+#### $C^{(2)}_{u,3}$ (`r sum(tb2$p.adjust <= fdr_cutoff)` terms)
 
 ```{r, results = "markup"}
 # tb2 = functional_enrichment(rownames(mat1)[od1[[2]]], id_mapping = id_mapping, 

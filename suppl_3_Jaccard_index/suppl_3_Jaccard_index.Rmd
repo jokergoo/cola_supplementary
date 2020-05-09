@@ -18,13 +18,16 @@ knitr::opts_chunk$set(
 ```
 
 
-Following two consensus heatmaps (Figure 1) are for $k$ = 2 and 3 (2 and 3 groups) on
+Following two consensus heatmaps (Figure 1) are for $k$ = 2 and 3 (2 and 3
+groups) on
 [GDS1875](https://www.ncbi.nlm.nih.gov/sites/GDSbrowser?acc=GDS1875) GDS
-dataset under top-value method **ATC** and partition method **hclust** (cola report is [here](https://cola-gds.github.io/GDS1875/cola_report.html)).
-When the number of subgroups increases form 2 to 3, a tiny subgroup only with
-one single sample is separated from one of the big subgroups.
+dataset under top-value method **ATC** and partitioning method **hclust**
+(cola report is [here](https://cola-gds.github.io/GDS1875/cola_report.html)).
+Figure 1 illustrates that when the number of subgroups increases form 2 to 3,
+a tiny subgroup only with one single sample is separated from one of the big
+subgroups.
 
-```{r, fig.width = 12, fig.height = 6, echo = FALSE, fig.align = "center", fig.cap = "Figure 1. Consensus heatmaps for k = 2 and 3"}
+```{r, fig.width = 12, fig.height = 6, echo = FALSE, fig.align = "center", fig.cap = "Figure 1. Consensus heatmaps for k = 2 and 3."}
 library(circlize)
 library(ComplexHeatmap)
 library(GetoptLong)
