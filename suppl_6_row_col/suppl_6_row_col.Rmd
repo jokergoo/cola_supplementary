@@ -63,98 +63,98 @@ For each dataset, there are four plots:
 
 ## Golub leukemia dataset
 
-```{r, fig.cap = "Figure 1. Distribution of 1-PAC scores."}
+```{r, fig.cap = "Figure S6.1. Distribution of 1-PAC scores."}
 dataset = "Golub_leukemia"
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_row_or_column_resampling_boxplot.pdf"))
 ```
 
-```{r, out.width = "400px", fig.cap = "Figure 2. Mean difference of 1-PAC between row-sampling and column-sampling."}
+```{r, out.width = "400px", fig.cap = "Figure S6.2. Mean difference of 1-PAC between row-sampling and column-sampling."}
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_row_or_column_resampling_median_diff.pdf"))
 ```
 
-```{r, fig.cap = "Figure 3. Individual partitions from row-sampling or column-sampling."}
+```{r, fig.cap = "Figure S6.3. Individual partitions from row-sampling or column-sampling."}
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_row_or_column_resampling_heatmap.pdf"))
 ```
 
-```{r, fig.cap = "Figure 4. Concordance of the partitioning by row-sampling or/and column-sampling."}
+```{r, fig.cap = "Figure S6.4. Concordance of the partitioning by row-sampling or/and column-sampling."}
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_row_or_column_resampling_corcodance.pdf"))
 ```
 
 ## HSMM single cell RNASeq dataset
 
-```{r, fig.cap = "Figure 5. Distribution of 1-PAC scores."}
+```{r, fig.cap = "Figure S6.5. Distribution of 1-PAC scores."}
 dataset = "HSMM_single_cell"
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_row_or_column_resampling_boxplot.pdf"))
 ```
 
-```{r, out.width = "400px", fig.cap = "Figure 6. Mean difference of 1-PAC between row-sampling and column-sampling."}
+```{r, out.width = "400px", fig.cap = "Figure S6.6. Mean difference of 1-PAC between row-sampling and column-sampling."}
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_row_or_column_resampling_median_diff.pdf"))
 ```
 
-```{r, fig.cap = "Figure 7. Individual partitions from row-sampling or column-sampling."}
+```{r, fig.cap = "Figure S6.7. Individual partitions from row-sampling or column-sampling."}
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_row_or_column_resampling_heatmap.pdf"))
 ```
 
-```{r, fig.cap = "Figure 8. Concordance of the partitioning by row-sampling or/and column-sampling."}
+```{r, fig.cap = "Figure S6.8. Concordance of the partitioning by row-sampling or/and column-sampling."}
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_row_or_column_resampling_corcodance.pdf"))
 ```
 
 
 ## MCF10CA single cell RNASeq dataset
 
-```{r, fig.cap = "Figure 9. Distribution of 1-PAC scores."}
+```{r, fig.cap = "Figure S6.9. Distribution of 1-PAC scores."}
 dataset = "MCF10CA_scRNAseq"
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_row_or_column_resampling_boxplot.pdf"))
 ```
 
-```{r, out.width = "400px", fig.cap = "Figure 10. Mean difference of 1-PAC between row-sampling and column-sampling."}
+```{r, out.width = "400px", fig.cap = "Figure S6.10. Mean difference of 1-PAC between row-sampling and column-sampling."}
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_row_or_column_resampling_median_diff.pdf"))
 ```
 
-```{r, fig.cap = "Figure 11. Individual partitions from row-sampling or column-sampling."}
+```{r, fig.cap = "Figure S6.11. Individual partitions from row-sampling or column-sampling."}
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_row_or_column_resampling_heatmap.pdf"))
 ```
 
-```{r, fig.cap = "Figure 12. Concordance of the partitioning by row-sampling or/and column-sampling."}
+```{r, fig.cap = "Figure S6.12. Concordance of the partitioning by row-sampling or/and column-sampling."}
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_row_or_column_resampling_corcodance.pdf"))
 ```
 
 ## Ritz ALL dataset
 
-```{r, fig.cap = "Figure 13. Distribution of 1-PAC scores."}
+```{r, fig.cap = "Figure S6.13. Distribution of 1-PAC scores."}
 dataset = "Ritz_ALL"
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_row_or_column_resampling_boxplot.pdf"))
 ```
 
-```{r, out.width = "400px", fig.cap = "Figure 14. Mean difference of 1-PAC between row-sampling and column-sampling."}
+```{r, out.width = "400px", fig.cap = "Figure S6.14. Mean difference of 1-PAC between row-sampling and column-sampling."}
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_row_or_column_resampling_median_diff.pdf"))
 ```
 
-```{r, fig.cap = "Figure 15. Individual partitions from row-sampling or column-sampling."}
+```{r, fig.cap = "Figure S6.15. Individual partitions from row-sampling or column-sampling."}
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_row_or_column_resampling_heatmap.pdf"))
 ```
 
-```{r, fig.cap = "Figure 16. Concordance of the partitioning by row-sampling or/and column-sampling."}
+```{r, fig.cap = "Figure S6.16. Concordance of the partitioning by row-sampling or/and column-sampling."}
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_row_or_column_resampling_corcodance.pdf"))
 ```
 
 
 ## TCGA GBM microarray dataset
 
-```{r, fig.cap = "Figure 17. Distribution of 1-PAC scores."}
+```{r, fig.cap = "Figure S6.17. Distribution of 1-PAC scores."}
 dataset = "TCGA_GBM"
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_row_or_column_resampling_boxplot.pdf"))
 ```
 
-```{r, out.width = "400px", fig.cap = "Figure 18. Mean difference of 1-PAC between row-sampling and column-sampling."}
+```{r, out.width = "400px", fig.cap = "Figure S6.18. Mean difference of 1-PAC between row-sampling and column-sampling."}
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_row_or_column_resampling_median_diff.pdf"))
 ```
 
-```{r, fig.cap = "Figure 19. Individual partitions from row-sampling or column-sampling."}
+```{r, fig.cap = "Figure S6.19. Individual partitions from row-sampling or column-sampling."}
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_row_or_column_resampling_heatmap.pdf"))
 ```
 
-```{r, fig.cap = "Figure 20. Concordance of the partitioning by row-sampling or/and column-sampling."}
+```{r, fig.cap = "Figure S6.20. Concordance of the partitioning by row-sampling or/and column-sampling."}
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_row_or_column_resampling_corcodance.pdf"))
 ```
 

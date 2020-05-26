@@ -18,16 +18,16 @@ knitr::opts_chunk$set(
 ```
 
 
-Following two consensus heatmaps (Figure 1) are for $k$ = 2 and 3 (2 and 3
+Following two consensus heatmaps (Figure S3.1) are for $k$ = 2 and 3 (2 and 3
 groups) on
 [GDS1875](https://www.ncbi.nlm.nih.gov/sites/GDSbrowser?acc=GDS1875) GDS
 dataset under top-value method **ATC** and partitioning method **hclust**
 (cola report is [here](https://cola-gds.github.io/GDS1875/cola_report.html)).
-Figure 1 illustrates that when the number of subgroups increases form 2 to 3,
+Figure S3.1 illustrates that when the number of subgroups increases form 2 to 3,
 a tiny subgroup only with one single sample is separated from one of the big
 subgroups.
 
-```{r, fig.width = 12, fig.height = 6, echo = FALSE, fig.align = "center", fig.cap = "Figure 1. Consensus heatmaps for k = 2 and 3."}
+```{r, fig.width = 12, fig.height = 6, echo = FALSE, fig.align = "center", fig.cap = "Figure S3.1. Consensus heatmaps for k = 2 and 3."}
 library(circlize)
 library(ComplexHeatmap)
 library(GetoptLong)
@@ -44,14 +44,14 @@ p = plot_grid(p1, p2, nrow = 1)
 print(p)
 ```
 
-Next we plot the 1-PAC scores as well Jaccard indices for the partitions under each $k$ (Figure 2).
+Next we plot the 1-PAC scores as well Jaccard indices for the partitions under each $k$ (Figure S3.2).
 We can see the 1-PAC scores are both very high at $k$ = 2 and 3, which means the partitions are both
 very stable for the two $k$. However, the Jaccard index is extremely high at $k$ =  3 (0.97), 
 which quantitatively shows partitions in $k$ = 3 is highly similar as $k$ = 2, and on the other hand,
 an extra subgroup only with one single sample does not provide any useful output for the analysis. Thus,
 we decline $k$ = 3 is a better choice while still take $k$ = 2 as the best number of subgroups.
 
-```{r, fig.width = 10, fig.height = 5, echo = FALSE, fig.align = "center", fig.cap = "Figure 2. The 1-PAC scores as well as Jaccard indices for the partitions under each k."}
+```{r, fig.width = 10, fig.height = 5, echo = FALSE, fig.align = "center", fig.cap = "Figure S3.2. The 1-PAC scores as well as Jaccard indices for the partitions under each k."}
 stat_df = as.data.frame(get_stats(res))
 k = 3
 

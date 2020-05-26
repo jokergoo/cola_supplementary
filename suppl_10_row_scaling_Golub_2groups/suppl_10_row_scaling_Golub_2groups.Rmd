@@ -128,7 +128,7 @@ res_list_2 = readRDS("/desktop-home/guz/project/development/cola_examples/Golub_
 
 ### Consensus heatmaps for two subgroups {.tabset}
 
-Figure 1A and 1B (switching the tabs in the following figure) illustrate
+Figure S10.1A and 1B (switching the tabs in the following figure) illustrate
 consensus heatmaps for two-group classification with or without row-scaling. Table
 1 lists the stability of consensus partition under different methods (measured
 by 1-PAC scores):
@@ -166,13 +166,13 @@ knitr::kable(tb, col.names = c("Rows are scaled", "Rows are unscaled"),  format 
 
 #### Rows are scaled
 
-```{r, fig.width = 12, fig.height = 8, fig.cap = "Figure 1A. Consensus heatmaps with two subgroups. Matrix rows are scaled."}
+```{r, fig.width = 12, fig.height = 8, fig.cap = "Figure S10.1A. Consensus heatmaps with two subgroups. Matrix rows are scaled."}
 collect_plots(res_list_1, k = 2, anno = anno, anno_col = anno_col)
 ```
 
 #### Rows are unscaled
 
-```{r, fig.width = 12, fig.height = 8, fig.cap = "Figure 1B. Consensus heatmaps with two subgroups. Matrix rows are unscaled."}
+```{r, fig.width = 12, fig.height = 8, fig.cap = "Figure S10.1B. Consensus heatmaps with two subgroups. Matrix rows are unscaled."}
 collect_plots(res_list_2, k = 2, anno = anno, anno_col = anno_col)
 ```
 
@@ -181,14 +181,14 @@ and not. We will discuss with more details in the next section.
 
 ### Classification from all methods {.tabset}
 
-Figure 2 puts classifications from all 24 methods together as well as one clinical
+Figure S10.2 puts classifications from all 24 methods together as well as one clinical
 annotation. The annotation `ALL.AML` tells whether the patient (the
 sample) had ALL or AML. The lightness of the main heatmap
 corresponds to the silhouette scores for samples measured in each partitioning
 method. With lighter color, the less stable for the sample to stay in its
 group.
 
-When the matrix rows are scaled (top heatmap in Figure 2), there are two major
+When the matrix rows are scaled (top heatmap in Figure S10.2), there are two major
 sets of different classifications where methods integrated with `mclust`,
 `kmeans`, and `NMF` classify samples into two groups where one group mainly
 contains AML samples. Other methods integrated with `ATC`, `skmeans` and `pam`
@@ -200,7 +200,7 @@ the colors in the heatmap are lighter), which means, they are less confident
 samples for the classifications and different partition methods might classify
 them into different groups.
 
-When the matrix are not scaled (bottom heatmap in Figure 2), the pattern is
+When the matrix are not scaled (bottom heatmap in Figure S10.2), the pattern is
 similar that there are also two sets of classifications. The difference to the
 top heatmap is now the partitions where features are selected based on row
 variance (`SD`/`CV`/`MAD`) are more stable in the consensus partitioning
@@ -322,7 +322,7 @@ setMethod(f = "collect_classes",
 ```
 
 
-```{r, fig.width = 10, fig.height = 10, out.width = "600px", fig.cap = "Figure 2. Classifications from all methods. Column order of the two heatmaps are the same."}
+```{r, fig.width = 10, fig.height = 10, out.width = "600px", fig.cap = "Figure S10.2. Classifications from all methods. Column order of the two heatmaps are the same."}
 ht1 = collect_classes(res_list_1, k = 2, anno = anno, anno_col = anno_col)
 ht1@row_title = "classification from all 24 methods, k = 2\nmatrix rows are scaled"
 
@@ -339,9 +339,9 @@ To look closer on the different impact on consensus partitioning of applying
 row-scaling or not, we select the results by `ATC:skmeans` for the case when
 matrix rows are scaled and the results by `MAD:kmeans` for the case when
 matrix rows are not scaled. The partitionings are stable for the two methods in 
-their settings. Figure 3 illustrates how the two classifications correspond.
+their settings. Figure S10.3 illustrates how the two classifications correspond.
 
-```{r, fig.height = 2, fig.width = 7, out.width = "600px", fig.cap = "Figure 3. Conseusus partitions from ATC:skmeans and MAD:kmeans methods."}
+```{r, fig.height = 2, fig.width = 7, out.width = "600px", fig.cap = "Figure S10.3. Conseusus partitions from ATC:skmeans and MAD:kmeans methods."}
 cl1 = get_classes(res_list_1["ATC:skmeans"], k = 2)[, 1]
 cl2 = get_classes(res_list_2["MAD:kmeans"], k = 2)[, 1]
 
@@ -362,12 +362,12 @@ matrix as $C_{s, 2}$ (or C_{s,2} if it cannot be rendered as math symbols)
 and the classification from the unscaled matrix as $C_{u,2}$ (or C_{u,2}).
 
 We can confirm the separation of the two groups by PCA visualization. PCA is
-applied to the scaled matrix in Figure 4A and to the unscaled matrix in Figure
-4B. The two plots shows the two classifications can both separate samples very well
+applied to the scaled matrix in Figure S10.4A and to the unscaled matrix in Figure
+S10.4B. The two plots shows the two classifications can both separate samples very well
 and seem very reasonable.
 
 
-```{r, fig.width = 14, fig.height = 7, fig.cap = "Figure 4. PCA plots for visualizing the two-group classification. Classification on the left plot is from $C_{s,2}$ and on the right is from $C_{u,2}$."}
+```{r, fig.width = 14, fig.height = 7, fig.cap = "Figure S10.4. PCA plots for visualizing the two-group classification. Classification on the left plot is from $C_{s,2}$ and on the right is from $C_{u,2}$."}
 p1 = ~dimension_reduction(res_list_1["ATC:skmeans"], method = "PCA", k = 2)
 p2 = ~dimension_reduction(res_list_2["MAD:kmeans"], method = "PCA", k = 2, scale_rows = FALSE)
 plot_grid(p1, p2, nrow = 1, labels = c("A", "B"))
@@ -380,8 +380,8 @@ signature genes that are significantly differentially expressed in the two
 groups, i.e. to compare the signature genes that support the two different
 classifications.
 
-In Figure 5A and 5B, the significant genes are simply selected by _t_-test (FDR < 0.05). According
-to the heatmaps illustrated in Figure 5A and 5B, it seems the two different
+In Figure S10.5A and S10.5B, the significant genes are simply selected by _t_-test (FDR < 0.05). According
+to the heatmaps illustrated in Figure S10.5A and S10.5B, it seems the two different
 classification are all reasonable that there are many significant genes supporting them,
 although the number of significant genes in $C_{s,2}$ are approximate 2 fold
 more than in $C_{u,2}$.
@@ -390,13 +390,13 @@ more than in $C_{u,2}$.
 
 #### Rows are scaled
 
-```{r, fig.width = 8, fig.height = 8, out.width = "600px", fig.cap = "Figure 5A. Signature genes from $C_{s,2}$."}
+```{r, fig.width = 8, fig.height = 8, out.width = "600px", fig.cap = "Figure S10.5A. Signature genes from $C_{s,2}$."}
 tb1 = get_signatures(res_list_1["ATC:skmeans"], k = 2, anno = anno, anno_col = anno_col)
 ```
 
 #### Rows are unscaled
 
-```{r, fig.width = 8, fig.height = 8, out.width = "600px", fig.cap = "Figure 5A. Signature genes from $C_{u,2}$."}
+```{r, fig.width = 8, fig.height = 8, out.width = "600px", fig.cap = "Figure S10.5A. Signature genes from $C_{u,2}$."}
 tb2 = get_signatures(res_list_2["MAD:kmeans"], k = 2, anno = anno, anno_col = anno_col, scale_rows = TRUE)
 ```
 
@@ -404,23 +404,23 @@ tb2 = get_signatures(res_list_2["MAD:kmeans"], k = 2, anno = anno, anno_col = an
 
 The two sets of signature genes have quite large overlap, and they also have
 their own unique set of genes. $C_{s,2}$ has 1106 (61%) specific genes and
-$C_{u,2}$ has 353 (33%) specific genes (Figure 6).
+$C_{u,2}$ has 353 (33%) specific genes (Figure S10.6).
 
-```{r, fig.width = 8, fig.height = 4, out.width = "600px", fig.cap = "Figure 6. Overlap of signature genes in $C_{s,2}$ and $C_{u,2}$."}
+```{r, fig.width = 8, fig.height = 4, out.width = "600px", fig.cap = "Figure S10.6. Overlap of signature genes in $C_{s,2}$ and $C_{u,2}$."}
 plot(euler(list("ATC:skmeans\nscaled" = tb1$which, "MAD:kmeans\nunscaled" = tb2$which)), quantities = TRUE)
 ```
 
-To see the difference of the three sets of signature genes in Figure 6, we
+To see the difference of the three sets of signature genes in Figure S10.6, we
 make heatmaps for the signature genes specific in classification $C_{s, 2}$,
 specific in $C_{u, 2}$ and those common in the two classifications.
 
-As illustrated in Figure 7A and 7C, the expression patterns for the signature genes specific in 
+As illustrated in Figure S10.7A and S10.7C, the expression patterns for the signature genes specific in 
 $C_{s,2}$ or $C_{u,2}$ are clean that the samples are not separable in the other classification,
-while in Figure 7B where the signature genes are shared by the two classifications, the signature
+while in Figure S10.7B where the signature genes are shared by the two classifications, the signature
 genes show intermeidate expression patterns in the samples that disagree in the two classifcations,
 they can be classified to different groups by different methods.
 
-```{r, fig.width = 15, fig.height = 6, fig.cap = "Figure 7. Heatmaps of $C_{s,2}$ specific signatures, $C_{u,2}$ specific signatures and common signatures in the two classifcations."}
+```{r, fig.width = 15, fig.height = 6, fig.cap = "Figure S10.7. Heatmaps of $C_{s,2}$ specific signatures, $C_{u,2}$ specific signatures and common signatures in the two classifcations."}
 mat = get_matrix(res_list_1)
 
 col_fun = colorRamp2(c(-2, 0, 2), c("green", "white", "red"))
@@ -473,12 +473,12 @@ We term the three categories of signature genes as group A/B/C and we apply
 Gene Ontology enrichment to the three set of genes by hypergenometric test (with
 the _clusterProfiler_ package). We only use BP ontologies (Biological Process) and
 the significant GO terms are filtered by FDR < 0.01. The enriched GO terms
-are visualized as a heatmap in Figure 8 by their similarities between GO terms (with _GOSemSim_ package).
+are visualized as a heatmap in Figure S10.8 by their similarities between GO terms (with _GOSemSim_ package).
 GO terms are split and clustered with 
 [the _simplifyEnrichment_ package](https://github.com/jokergoo/simplifyEnrichment).
 The keywords of the summaries of GO functions in each cluster are visualized by word clouds.
 
-Again, Figure 8 illustrates each set of genes have quite a lot enriched GO terms, which
+Again, Figure S10.8 illustrates each set of genes have quite a lot enriched GO terms, which
 might imply both classification are biologically reasonable.
 
 The complete list of the GO enrichment can be found at the end of this supplementary.
@@ -494,7 +494,7 @@ tb2 = functional_enrichment(rownames(mat2), id_mapping = id_mapping, ontology = 
 tb3 = functional_enrichment(rownames(mat3), id_mapping = id_mapping, ontology = "BP")[[1]]
 ```    
 
-```{r, fig.width = 12, fig.height = 7, fig.cap = "Figure 8. Gene ontology enrichment on the three sets of genes illustrated in Figure 7."}
+```{r, fig.width = 12, fig.height = 7, fig.cap = "Figure S10.8. Gene ontology enrichment on the three sets of genes illustrated in Figure S10.7."}
 ago = c(rownames(tb1), rownames(tb2), rownames(tb3))
 ago = unique(ago)
 pm = matrix(1, nrow = length(ago), ncol = 3)

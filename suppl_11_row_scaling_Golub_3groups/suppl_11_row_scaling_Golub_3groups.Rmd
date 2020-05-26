@@ -117,7 +117,7 @@ three groups where ALL samples are separated into two subgroups.
 
 In the three-group classification, when rows are scaled, only `ATC:skmeans`
 generates stable partition (1-PAC score = 0.96), while when rows are not
-scaled, no method generates stable partitions, as shown in Table 1 and Figure 1.
+scaled, no method generates stable partitions, as shown in Table 1 and Figure S11.1.
 
 <style>
 table {
@@ -152,13 +152,13 @@ knitr::kable(tb, col.names = c("Rows are scaled", "Rows are unscaled"),  format 
 
 #### Rows are scaled
 
-```{r, fig.width = 12, fig.height = 8, fig.cap = "Figure 1A. Consensus heatmaps with three groups. Matrix rows are scaled."}
+```{r, fig.width = 12, fig.height = 8, fig.cap = "Figure S11.1A. Consensus heatmaps with three groups. Matrix rows are scaled."}
 collect_plots(res_list_1, k = 3, anno = anno, anno_col = anno_col)
 ```
 
 #### Rows are unscaled
 
-```{r, fig.width = 12, fig.height = 8, fig.cap = "Figure 1B. Consensus heatmaps with three groups. Matrix rows are unscaled."}
+```{r, fig.width = 12, fig.height = 8, fig.cap = "Figure S11.1B. Consensus heatmaps with three groups. Matrix rows are unscaled."}
 collect_plots(res_list_2, k = 3, anno = anno, anno_col = anno_col)
 ```
 
@@ -169,9 +169,9 @@ because it is the only stable partition, and pick `SD:skmeans` for the
 unscaled case because it has the highest 1-PAC score although it is not a
 stable partition. Besides the AML/ALL annotation, the original Golub study
 also provides B-cell/T-cell annotation for the ALL samples. The cola
-classifications and the annotations are visualized in Figure 2.
+classifications and the annotations are visualized in Figure S11.2.
 
-```{r, fig.height = 1, fig.width = 8, fig.cap = "Figure 2. Conseusus partitions from ATC:skmeans and SD:skmeans methods."}
+```{r, fig.height = 1, fig.width = 8, fig.cap = "Figure S11.2. Conseusus partitions from ATC:skmeans and SD:skmeans methods."}
 cl1 = get_classes(res_list_1["ATC:skmeans"], k = 3)[, 1]
 cl2 = get_classes(res_list_2["SD:skmeans"], k = 3)[, 1]
 
@@ -185,7 +185,7 @@ To make it easier to describe, we term the classification from the scaled
 matrix as $C_{s, 3}$ (or C_{s,3} if it cannot be rendered as math symbols) 
 and the classification from the unscaled matrix as $C_{u,3}$ (or C_{u,3}).
 
-In Figure 2, we can observe that both classification $C_{s, 3}$ and $C_{u, 3}$
+In Figure S11.2, we can observe that both classification $C_{s, 3}$ and $C_{u, 3}$
 separate ALL samples into two groups, but the classifications are different.
 $C_{u,3}$ separates ALL samples into two groups that fit very well with
 the B-cell/T-cell annotation while $C_{s, 3}$ gives a new classification.
@@ -198,7 +198,7 @@ In the PCA plots in Fgiure 3, all three groups are separated very well
 under $C_{s, 3}$, while group 2 and group3 can hardly be separated under
 $C_{u, 3}$.
 
-```{r, fig.width = 14, fig.height = 7, fig.cap = "Figure 3. PCA plots for visualizing the two-group classification. Classification on the left plot is from $C_{s,3}$ and on the right is from $C_{u,3}$."}
+```{r, fig.width = 14, fig.height = 7, fig.cap = "Figure S11.3. PCA plots for visualizing the two-group classification. Classification on the left plot is from $C_{s,3}$ and on the right is from $C_{u,3}$."}
 p1 = ~dimension_reduction(res_list_1["ATC:skmeans"], k = 3, method = "PCA")
 p2 = ~dimension_reduction(res_list_2["SD:skmeans"], k = 3, method = "PCA", scale_rows = FALSE)
 plot_grid(p1, p2, nrow = 1,labels = c("A", "B"))
@@ -208,7 +208,7 @@ plot_grid(p1, p2, nrow = 1,labels = c("A", "B"))
 ### Signature genes
 
 Next we look at the significantly expressed genes under the two classifications, 
-illustrated in Figure 4. Both classifications give amount of sigature genes, which
+illustrated in Figure S11.4. Both classifications give amount of sigature genes, which
 is mainly due to the difference between ALL and AML. To see how different
 methods affect the classifiction on ALL samples, we should only look at the ALL samples,
 as described in the next section. 
@@ -217,13 +217,13 @@ as described in the next section.
 
 #### Rows are scaled
 
-```{r, fig.width = 8, fig.height = 8, out.width = "600px", fig.cap = "Figure 4A. Signature genes from C_{s,3}."}
+```{r, fig.width = 8, fig.height = 8, out.width = "600px", fig.cap = "Figure S11.4A. Signature genes from C_{s,3}."}
 tb1 = get_signatures(res_list_1["ATC:skmeans"], k = 3, anno = anno, anno_col = anno_col, simplify = TRUE)
 ```
 
 #### Row are unscaled
 
-```{r, fig.width = 8, fig.height = 8, out.width = "600px", fig.cap = "Figure 4B. Signature genes from C_{u,3}."}
+```{r, fig.width = 8, fig.height = 8, out.width = "600px", fig.cap = "Figure S11.4B. Signature genes from C_{u,3}."}
 tb2 = get_signatures(res_list_2["SD:skmeans"], k = 3, anno = anno, anno_col = anno_col, simplify = TRUE, scale_rows = TRUE)
 ```
 
@@ -233,15 +233,15 @@ tb2 = get_signatures(res_list_2["SD:skmeans"], k = 3, anno = anno, anno_col = an
 We remove the samples with class label 1 (which corresponds to AML samples)
 in both classifications, and we apply t-test between group 2 and group 3 samples.
 The significant genes under the two classifications are visualized as heatmaps
-in Figure 5.
+in Figure S11.5.
 
 Since now we only look at the two groups in the two classifications, we modify
 the symbols of the two classification to $C^{(2)}_{s,3}$ and $C^{(2)}_{u,3}$.
 
-A direct conclusion from Figure 5 is there are far more significant genes under
+A direct conclusion from Figure S11.5 is there are far more significant genes under
 $C^{(2)}_{s,3}$ (1217 genes) than $C^{(2)}_{u,3}$ (245 genes).
 
-```{r, fig.width = 12, fig.height = 6, fig.cap = "Figure 5. Significant genes between group 2 and 3 in the two classifications. Left: from $C^{(2)}_{s,3}$, right: from $C^{(2)}_{u,3}$."}
+```{r, fig.width = 12, fig.height = 6, fig.cap = "Figure S11.5. Significant genes between group 2 and 3 in the two classifications. Left: from $C^{(2)}_{s,3}$, right: from $C^{(2)}_{u,3}$."}
 ind1 = cl1 != 1
 
 ind2 = cl2 != 1
@@ -279,13 +279,13 @@ od2 = row_order(ht2)
 plot_grid(p1, p2, nrow = 1, labels = c("A", "B"))
 ```
 
-Since Figure 5 only shows the relative expression (the scaled expression), in Figure 6,
+Since Figure S11.5 only shows the relative expression (the scaled expression), in Figure S11.6,
 we check the distribution of the absolute expression level of the signature genes
-in the two classifications, visualized in Figure 6. Figure 6 shows both signature genes
+in the two classifications, visualized in Figure S11.6. Figure S11.6 shows both signature genes
 are more enriched in the highly expressed genes, where signatures from $C^{(2)}_{s,3}$
 also cover genes with moderate expression levels.
 
-```{r, fig.width = 8, fig.height = 6, fig.cap = "Figure 6. Distribution of the absolute expression of signature genes. A and C: genes are ordered based on their base mean (mean expression among all samples) where significant genes are marked in blue and red. B and D: number of signatures that fall in every 20-gene interval, the same ordering on x-axes as Figure A and C."}
+```{r, fig.width = 8, fig.height = 6, fig.cap = "Figure S11.6. Distribution of the absolute expression of signature genes. A and C: genes are ordered based on their base mean (mean expression among all samples) where significant genes are marked in blue and red. B and D: number of signatures that fall in every 20-gene interval, the same ordering on x-axes as Figure A and C."}
 par(mfrow = c(2, 2), mar = c(2, 4, 4, 1))
 s = rowMeans(get_matrix(res_list_1))
 s_rk = structure(rank(s), names = names(s))
@@ -300,16 +300,16 @@ lines(s_rk[nm], s[nm], col = "red", type = "h")
 hist(s_rk[nm], nclass = 21, xlim = c(0, 4200), xlab = "", main = "D) unscaled, #signatures in every 20-gene bins")
 ```
 
-The two sets of signature genes have very small overlap, illustrated in Figure 7.
+The two sets of signature genes have very small overlap, illustrated in Figure S11.7.
 
-```{r, fig.width = 8, fig.height = 3, fig.cap = "Figure 7. Overlap of signature genes in $C^{(2)}_{s,3}$ and $C^{(2)}_{u,3}$."}
+```{r, fig.width = 8, fig.height = 3, fig.cap = "Figure S11.7. Overlap of signature genes in $C^{(2)}_{s,3}$ and $C^{(2)}_{u,3}$."}
 plot(euler(list(scaled = which(t1$fdr < 0.05), unscaled = which(t2$fdr < 0.05))), quantities = TRUE)
 ```
 
 Similar as the analysis in [the two-group classification](../suppl_10_row_scaling_Golub_2groups/suppl_10_row_scaling_Golub_2groups.html), we check the biological functions that are enriched
 in the two sets of signature genes from $C^{(2)}_{s,3}$ and $C^{(2)}_{u,3}$. Mainly because of
 the high amount of signature genes from $C^{(2)}_{s,3}$, it has far more enriched GO functions
-than $C^{(2)}_{u,3}$ (Figure 8).
+than $C^{(2)}_{u,3}$ (Figure S11.8).
 
 ```{r}
 library(hu6800.db)
@@ -324,7 +324,7 @@ tb2 = functional_enrichment(rownames(mat1)[unlist(od2)], id_mapping = id_mapping
 tb2 = tb2[tb2$Count >= 5, , drop = FALSE]
 ```    
 
-```{r, fig.width = 12, fig.height = 7, fig.cap = "Figure 8. Gene ontology enrichment on the two sets of signature genes illustrated in Figure 5."}
+```{r, fig.width = 12, fig.height = 7, fig.cap = "Figure S11.8. Gene ontology enrichment on the two sets of signature genes illustrated in Figure S11.5."}
 ago = c(rownames(tb1), rownames(tb2))
 ago = unique(ago)
 pm = matrix(1, nrow = length(ago), ncol = 2)

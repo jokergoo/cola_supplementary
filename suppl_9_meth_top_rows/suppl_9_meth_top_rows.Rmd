@@ -123,7 +123,7 @@ CpG categories are:
   is also CGI shelf annotation. In this analysis, for simplicity, we merge CGI
   shelf and CGI sea to a same category because they show very similar patterns.
 
-Figure 1 visualizes the methylation profile for the top 5000 CpG probes
+Figure S9.1 visualizes the methylation profile for the top 5000 CpG probes
 extracted from different top-value methods. At the bottom of each heatmap is
 an annotation (`dkfz_subtype`) from [the orignial
 study](http://dx.doi.org/10.1016/j.ccr.2012.08.024) where the subtypes were
@@ -133,7 +133,7 @@ show distinct methylation patterns between subtypes (heatmaps in the first
 row). CpG probes by SD can separate all six subtypes which is expected because
 the original subtypes were also based on probes with top SD scores. Probes by
 CV can separate _G34_, _IDH_, _K27_ and _RTK II Classic_ subtypes but not the
-other two. SD and MAD extract more similar CpG probes (Figure 2) while CV
+other two. SD and MAD extract more similar CpG probes (Figure S9.2) while CV
 tends to extract probes with lower methylation in general.
 
 
@@ -216,7 +216,7 @@ p2 = ggplot(tb, aes(x = method, y = Freq, fill = Var1)) +
 ```
 
 
-```{r, fig.width = 14, fig.height = 10, fig.cap = "Figure 1. Top 5000 CpG probes under different top-value methods."}
+```{r, fig.width = 14, fig.height = 10, fig.cap = "Figure S9.1. Top 5000 CpG probes under different top-value methods."}
 meth_col_fun = colorRamp2(c(0, 0.5, 1), c("blue", "white", "red"))
 grid.newpage()
 pushViewport(viewport(layout = grid.layout(nrow = 2, ncol = 3)))
@@ -234,7 +234,7 @@ for(i in seq_along(top_value_list)) {
 popViewport()
 ```
 
-```{r, fig.height = 5, fig.width = 6, out.width = "400px", fig.cap = "Figure 2. Euler diagram of the top 5000 CpG sites from different top-value methods. Top 5000 CpG sites extracted by ATC-related methods (the top three) have little overlap to those by SD/CV/MAD (the bottom three)."}
+```{r, fig.height = 5, fig.width = 6, out.width = "400px", fig.cap = "Figure S9.2. Euler diagram of the top 5000 CpG sites from different top-value methods. Top 5000 CpG sites extracted by ATC-related methods (the top three) have little overlap to those by SD/CV/MAD (the bottom three)."}
 top_elements_overlap(top_value_list, top_n = 5000, method = "euler")
 ```
 
@@ -250,28 +250,28 @@ methylation patterns and CGI seas overlap more to the gene bodies or
 intergenic regions and normally relate to methylation changes on long-range
 regions which might relate to the chromatin structure changes.
 
-As already shown in Figure 1, the proportion of CpGs in each CpG categories
+As already shown in Figure S9.1, the proportion of CpGs in each CpG categories
 are different in the top 5000 probes extracted from different top-value
-methods (the annotation on the left of each heatmap in Figure 1, also put
-together in Figure 3B). E.g. probes in CGI have higher SD values, while the
+methods (the annotation on the left of each heatmap in Figure S9.1, also put
+together in Figure S9.3B). E.g. probes in CGI have higher SD values, while the
 probes in CGI seas show stronger correlation to each other. Thus, we think it
 is worthwile to extract features and apply consensus partitioning for probes
 in different CpG categories separately.
 
-As shown in Figure 3B, for the top 5000 CpGs by SD, there are only 20% of the
+As shown in Figure S9.3B, for the top 5000 CpGs by SD, there are only 20% of the
 CpG belonging to CGI sea, while 46.2% of the probes in the complete 450K array are in
-CGI sea (For the 450K methylation array, as visualized in Figure 3A, 30.4% of
+CGI sea (For the 450K methylation array, as visualized in Figure S9.3A, 30.4% of
 the CpGs belong to CGI, 23.4% belong to CGI shores and 46.2% belong to CGI
 seas.). Thus, simply taking top CpG features from all probes might miss the interesting
 patterns from CGI shores or CGI seas.
 
 
-```{r, fig.width = 12, fig.height = 5, fig.cap = "Figure 3. A) Frequency of CpGs in different categories. B) Fraction of different CpG categories for the top 5000 CpGs by different top-value methods."}
+```{r, fig.width = 12, fig.height = 5, fig.cap = "Figure S9.3. A) Frequency of CpGs in different categories. B) Fraction of different CpG categories for the top 5000 CpGs by different top-value methods."}
 library(cowplot)
 plot_grid(p1, p2, nrow = 1, labels = c("A", "B"), rel_widths = c(4, 6))
 ```
 
-Similar as Figure 1, Figure 4 visualizes the top 5000 CpGs from diffferent CpG
+Similar as Figure S9.1, Figure S9.4 visualizes the top 5000 CpGs from diffferent CpG
 categories. For CpGs from CGI, SD gives a very clean image that almost all six
 subtypes can be separated although some of the _RTK I PDGFRA_ samples mixed
 with _Mesenchymal_ subtype. CV can select probes to nicely separate
@@ -284,7 +284,7 @@ From CGI shore to sea, the methylation profile becomes more noisy and some subty
 cannot be nicely separated any more. ATC now separate samples into the high-methylation
 and low-methylation groups.
 
-Note in the discussion on Figure 4, when we mention "subtypes can be separated", we
+Note in the discussion on Figure S9.4, when we mention "subtypes can be separated", we
 refer to the hierarchical clustering applied on samples and visualized on top
 of each heatmap, while it is not based on the consensus clustering.
 
@@ -292,7 +292,7 @@ of each heatmap, while it is not based on the consensus clustering.
 
 #### Islands
 
-```{r, fig.width = 14, fig.height = 8, fig.cap = "Figure 4A. Top 5000 CpGs from CGI, extracted by different top-value methods."}
+```{r, fig.width = 14, fig.height = 8, fig.cap = "Figure S9.4A. Top 5000 CpGs from CGI, extracted by different top-value methods."}
 ca = "island"
 mat2 = mat1[ cpg_anno2 == ca, ]
 if(file.exists(qq("GBM_450k_cgi_@{ca}_top_value_list.rds"))) {
@@ -341,7 +341,7 @@ popViewport(2)
 #### Shores
 
 
-```{r, fig.width = 14, fig.height = 8, fig.cap = "Figure 4B. Top 5000 CpGs from CGI shores, extracted by different top-value methods."}
+```{r, fig.width = 14, fig.height = 8, fig.cap = "Figure S9.4B. Top 5000 CpGs from CGI shores, extracted by different top-value methods."}
 ca = "shore"
 mat2 = mat1[ cpg_anno2 == ca, ]
 if(file.exists(qq("GBM_450k_cgi_@{ca}_top_value_list.rds"))) {
@@ -389,7 +389,7 @@ popViewport(2)
 #### Seas
 
 
-```{r, fig.width = 14, fig.height = 8, fig.cap = "Figure 4C. Top 5000 CpGs from CGI seas, extracted by different top-value methods."}
+```{r, fig.width = 14, fig.height = 8, fig.cap = "Figure S9.4C. Top 5000 CpGs from CGI seas, extracted by different top-value methods."}
 ca = "sea"
 mat2 = mat1[ cpg_anno2 == ca, ]
 if(file.exists(qq("GBM_450k_cgi_@{ca}_top_value_list.rds"))) {
@@ -441,11 +441,11 @@ for the gene expression datasets. However, as shown in previous figures, ATC
 performs the worst. We want to know why ATC features are so different and what
 information they can provide.
 
-Since ATC is based on correlation, in Figure 5, we also scaled the methylation
+Since ATC is based on correlation, in Figure S9.5, we also scaled the methylation
 by rows by z-score transformation (the right heatmap). For the top 5000 CGI
 probes, although the methylation profile looks very similar among samples,
 there is a very clear pattern that separates samples into two groups after
-z-score transformation (Figure 5A, right heatmap). The two-group
+z-score transformation (Figure S9.5A, right heatmap). The two-group
 classification is identified by simply applying k-means clustering on the
 scaled methylation profile and is marked as `km` annotation under the heatmap.
 
@@ -486,7 +486,7 @@ km_col = c("1" = "red", "2" = "green")
 
 #### Islands
 
-```{r, fig.width = 10, fig.height = 5, out.width = "800px", fig.cap = "Figure 5A. Heatmap of the top 5000 CpGs in CGI by ATC methods. Left heatmap: the original methylation values. Right heatmap: the z-scores."}
+```{r, fig.width = 10, fig.height = 5, out.width = "800px", fig.cap = "Figure S9.5A. Heatmap of the top 5000 CpGs in CGI by ATC methods. Left heatmap: the original methylation values. Right heatmap: the z-scores."}
 ca = "island"
 mat2 = mat1[ cpg_anno2 == ca, ]
 top_value_list = readRDS(qq("GBM_450k_cgi_@{ca}_top_value_list.rds"))
@@ -518,7 +518,7 @@ popViewport()
 
 #### Shores
 
-```{r, fig.width = 10, fig.height = 5, out.width = "800px", fig.cap = "Figure 5B. Heatmap of the top 5000 CpGs in CGI shores by ATC methods. Left heatmap: the original methylation values. Right heatmap: the z-scores."}
+```{r, fig.width = 10, fig.height = 5, out.width = "800px", fig.cap = "Figure S9.5B. Heatmap of the top 5000 CpGs in CGI shores by ATC methods. Left heatmap: the original methylation values. Right heatmap: the z-scores."}
 ca = "shore"
 mat2 = mat1[ cpg_anno2 == ca, ]
 top_value_list = readRDS(qq("GBM_450k_cgi_@{ca}_top_value_list.rds"))
@@ -550,7 +550,7 @@ popViewport()
 
 #### Seas
 
-```{r, fig.width = 10, fig.height = 5, out.width = "800px", fig.cap = "Figure 5C. Heatmap of the top 5000 CpGs in CGI seas by ATC methods. Left heatmap: the original methylation values. Right heatmap: the z-scores."}
+```{r, fig.width = 10, fig.height = 5, out.width = "800px", fig.cap = "Figure S9.5C. Heatmap of the top 5000 CpGs in CGI seas by ATC methods. Left heatmap: the original methylation values. Right heatmap: the z-scores."}
 ca = "sea"
 mat2 = mat1[ cpg_anno2 == ca, ]
 top_value_list = readRDS(qq("GBM_450k_cgi_@{ca}_top_value_list.rds"))
@@ -585,12 +585,12 @@ popViewport()
 As for the CpGs in shores and seas, the relative methylation profiles show
 singular one-side pattern, we suspect it is due to the global difference. Thus
 we look at the global methylation distribution of all probes in each CpG
-category. In Figure 6, samples are ordered by the median methylation value.
+category. In Figure S9.6, samples are ordered by the median methylation value.
 The bottom annotations show whether the sample belong to the `km` groups (the
-same as in Figure 5) or the subtypes.
+same as in Figure S9.5) or the subtypes.
 
 For methylation of CGI probes, the `km` or the subtype classifications have no
-relation to the increasing methylation levels among samples (Figure 6A), while
+relation to the increasing methylation levels among samples (Figure S9.6A), while
 for CGI shore/sea probes, samples labelled as `km = 1` have systematic high
 level of methylation. Samples in different subtypes also show different methylation
 levels, e.g. _IDH_ samples show the highest methylation and _K27_/_G34_ show 
@@ -608,7 +608,7 @@ for(nm in unique(phenotype$dkfz_subtype)) {
 
 #### Islands
 
-```{r, fig.width = 8, fig.height = 6.1, out.width = "600px", fig.cap = "Figure 6A. Global methylation distribution in CpG islands."}
+```{r, fig.width = 8, fig.height = 6.1, out.width = "600px", fig.cap = "Figure S9.6A. Global methylation distribution in CpG islands."}
 ca = "island"
 mat2 = mat1[ cpg_anno2 == ca, ]
 ht = densityHeatmap(mat2, column_title = "Islands", show_column_names = FALSE,
@@ -620,7 +620,7 @@ draw(ht, merge_legend = TRUE)
 
 #### Shores
 
-```{r, fig.width = 8, fig.height = 6.1, out.width = "600px", fig.cap = "Figure 6B. Global methylation distribution in CGI shores."}
+```{r, fig.width = 8, fig.height = 6.1, out.width = "600px", fig.cap = "Figure S9.6B. Global methylation distribution in CGI shores."}
 ca = "shore"
 mat2 = mat1[ cpg_anno2 == ca, ]
 ht = densityHeatmap(mat2, column_title = "Shores", show_column_names = FALSE,
@@ -632,7 +632,7 @@ draw(ht, merge_legend = TRUE)
 
 #### Seas
 
-```{r, fig.width = 8, fig.height = 6.1, out.width = "600px", fig.cap = "Figure 6C. Global methylation distribution in CGI seas."}
+```{r, fig.width = 8, fig.height = 6.1, out.width = "600px", fig.cap = "Figure S9.6C. Global methylation distribution in CGI seas."}
 ca = "sea"
 mat2 = mat1[ cpg_anno2 == ca, ]
 ht = densityHeatmap(mat2, column_title = "Seas", show_column_names = FALSE,
@@ -644,13 +644,13 @@ draw(ht, merge_legend = TRUE)
 
 ### Different CpG features might give different classifications
 
-As shown in Figure 1 and 4, we can make the conclusion that SD selects better
+As shown in Figure S9.1 and S9.4, we can make the conclusion that SD selects better
 probes for subgroup classification. Thus, we extract the consensus
 partitioning results by `SD:skmeans` for the three CpG categories, as well as
 taking all probes. The reason of selecting `skmeans` is because it generates 
 stable partitions. The classes predicted (the number of subgroups are based
 on the `suggest_best_k()` function in _cola_ package) as well as the `dkfz_subtype`
-annotation are visualized in Figure 7. 
+annotation are visualized in Figure S9.7. 
 
 We see, `all`/`island`/`shore` generate similar classifications. A subset of
 _Mesenchymal_ samples are classified into the same group as _RTK II Classic_.
@@ -661,7 +661,7 @@ subtype merge some of the samples in _RTK I PDGFRA_ and _IDH_ subtype merges
 the other samples in _RTK I PDGFRA_.
 
 
-```{r, fig.width = 12, fig.height = 2, out.width = "800px", fig.cap = "Figure 7. Partitions from different CpG categories."}
+```{r, fig.width = 12, fig.height = 2, out.width = "800px", fig.cap = "Figure S9.7. Partitions from different CpG categories."}
 rl_all = readRDS("/desktop-home/guz/project/development/cola_examples/GBM_450K/GBM_450K_cgi_all_subgroup.rds")
 rl_island = readRDS("/desktop-home/guz/project/development/cola_examples/GBM_450K/GBM_450K_cgi_island_subgroup.rds")
 rl_shore = readRDS("/desktop-home/guz/project/development/cola_examples/GBM_450K/GBM_450K_cgi_shore_subgroup.rds")

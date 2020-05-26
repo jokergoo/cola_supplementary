@@ -58,7 +58,7 @@ For each dataset, there are four plots:
 
 #### 1-PAC, by row
 
-```{r, fig.cap = "Figure 1A. Variability of 1-PAC scores from the 100 cola runs. Consensus partitionings were applied by row sampling."}
+```{r, fig.cap = "Figure S7.1A. Variability of 1-PAC scores from the 100 cola runs. Consensus partitionings were applied by row sampling."}
 dataset = "TCGA_GBM_by_row"
 stat = "1-PAC"
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_subgroup_repeat_@{stat}_mean_vs_sd.pdf"))
@@ -66,7 +66,7 @@ add_pdf(qq("@{BASE_DIR}/image/@{dataset}_subgroup_repeat_@{stat}_mean_vs_sd.pdf"
 
 #### 1-PAC, by column
 
-```{r, fig.cap = "Figure 1B. Variability of 1-PAC scores from the 100 cola runs. Consensus partitionings were applied by column sampling."}
+```{r, fig.cap = "Figure S7.1B. Variability of 1-PAC scores from the 100 cola runs. Consensus partitionings were applied by column sampling."}
 dataset = "TCGA_GBM_by_column"
 stat = "1-PAC"
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_subgroup_repeat_@{stat}_mean_vs_sd.pdf"))
@@ -74,7 +74,7 @@ add_pdf(qq("@{BASE_DIR}/image/@{dataset}_subgroup_repeat_@{stat}_mean_vs_sd.pdf"
 
 #### Mean silhouette, by row
 
-```{r, fig.cap = "Figure 1C. Variability of mean silhouette scores from the 100 cola runs. Consensus partitionings were applied by row sampling."}
+```{r, fig.cap = "Figure S7.1C. Variability of mean silhouette scores from the 100 cola runs. Consensus partitionings were applied by row sampling."}
 dataset = "TCGA_GBM_by_row"
 stat = "mean_silhouette"
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_subgroup_repeat_@{stat}_mean_vs_sd.pdf"))
@@ -82,7 +82,7 @@ add_pdf(qq("@{BASE_DIR}/image/@{dataset}_subgroup_repeat_@{stat}_mean_vs_sd.pdf"
 
 #### Mean silhouette, by column
 
-```{r, fig.cap = "Figure 1D. Variability of mean silhouette scores from the 100 cola runs. Consensus partitionings were applied by column sampling."}
+```{r, fig.cap = "Figure S7.1D. Variability of mean silhouette scores from the 100 cola runs. Consensus partitionings were applied by column sampling."}
 dataset = "TCGA_GBM_by_column"
 stat = "mean_silhouette"
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_subgroup_repeat_@{stat}_mean_vs_sd.pdf"))
@@ -90,7 +90,7 @@ add_pdf(qq("@{BASE_DIR}/image/@{dataset}_subgroup_repeat_@{stat}_mean_vs_sd.pdf"
 
 #### Concordance, by row
 
-```{r, fig.cap = "Figure 1E. Variability of concordance scores from the 100 cola runs. Consensus partitionings were applied by row sampling."}
+```{r, fig.cap = "Figure S7.1E. Variability of concordance scores from the 100 cola runs. Consensus partitionings were applied by row sampling."}
 dataset = "TCGA_GBM_by_row"
 stat = "concordance"
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_subgroup_repeat_@{stat}_mean_vs_sd.pdf"))
@@ -98,7 +98,7 @@ add_pdf(qq("@{BASE_DIR}/image/@{dataset}_subgroup_repeat_@{stat}_mean_vs_sd.pdf"
 
 #### Concordance, by column
 
-```{r, fig.cap = "Figure 1F. Variability of concordance scores from the 100 cola runs. Consensus partitionings were applied by column sampling."}
+```{r, fig.cap = "Figure S7.1F. Variability of concordance scores from the 100 cola runs. Consensus partitionings were applied by column sampling."}
 dataset = "TCGA_GBM_by_column"
 stat = "concordance"
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_subgroup_repeat_@{stat}_mean_vs_sd.pdf"))
@@ -109,14 +109,14 @@ add_pdf(qq("@{BASE_DIR}/image/@{dataset}_subgroup_repeat_@{stat}_mean_vs_sd.pdf"
 
 #### by row
 
-```{r, fig.cap = "Figure 2A. Mean concordance in the 100 cola runs. Consensus partitionings were applied by row sampling."}
+```{r, fig.cap = "Figure S7.2A. Mean concordance in the 100 cola runs. Consensus partitionings were applied by row sampling."}
 dataset = "TCGA_GBM_by_row"
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_subgroup_repeat_concordance.pdf"))
 ```
 
 #### by column
 
-```{r, fig.cap = "Figure 2B. Mean concordance in the 100 cola runs. Consensus partitionings were applied by column sampling."}
+```{r, fig.cap = "Figure S7.2B. Mean concordance in the 100 cola runs. Consensus partitionings were applied by column sampling."}
 dataset = "TCGA_GBM_by_column"
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_subgroup_repeat_concordance.pdf"))
 ```
@@ -126,14 +126,14 @@ add_pdf(qq("@{BASE_DIR}/image/@{dataset}_subgroup_repeat_concordance.pdf"))
 
 #### by row
 
-```{r, fig.cap = "Figure 3A. Mean concordance of consensus partitioning with 25 and 200 samplings. Consensus partitionings were applied by row sampling."}
+```{r, fig.cap = "Figure S7.3A. Mean concordance of consensus partitioning with 25 and 200 samplings. Consensus partitionings were applied by row sampling."}
 dataset = "TCGA_GBM_by_row"
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_subgroup_repeat_25_vs_200.pdf"))
 ```
 
 #### by column
 
-```{r, fig.cap = "Figure 3B. Mean concordance of consensus partitioning with 25 and 200 samplings. Consensus partitionings were applied by column sampling."}
+```{r, fig.cap = "Figure S7.3B. Mean concordance of consensus partitioning with 25 and 200 samplings. Consensus partitionings were applied by column sampling."}
 dataset = "TCGA_GBM_by_column"
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_subgroup_repeat_25_vs_200.pdf"))
 ```
@@ -143,14 +143,14 @@ add_pdf(qq("@{BASE_DIR}/image/@{dataset}_subgroup_repeat_25_vs_200.pdf"))
 
 #### by row
 
-```{r, out.width = "800px", fig.cap = "Figure 4A. Relations between mean 1-PAC from 25/200 samplings and concordance. Consensus partitionings were applied by row sampling."}
+```{r, out.width = "800px", fig.cap = "Figure S7.4A. Relations between mean 1-PAC from 25/200 samplings and concordance. Consensus partitionings were applied by row sampling."}
 dataset = "TCGA_GBM_by_row"
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_subgroup_repeat_25_vs_200_pac_vs_corcondance.pdf"))
 ```
 
 #### by column
 
-```{r, out.width = "800px", fig.cap = "Figure 4B. Relations between mean 1-PAC from 25/200 samplings and concordance. Consensus partitionings were applied by column sampling."}
+```{r, out.width = "800px", fig.cap = "Figure S7.4B. Relations between mean 1-PAC from 25/200 samplings and concordance. Consensus partitionings were applied by column sampling."}
 dataset = "TCGA_GBM_by_column"
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_subgroup_repeat_25_vs_200_pac_vs_corcondance.pdf"))
 ```
@@ -163,7 +163,7 @@ add_pdf(qq("@{BASE_DIR}/image/@{dataset}_subgroup_repeat_25_vs_200_pac_vs_corcon
 
 #### 1-PAC, by row
 
-```{r, fig.cap = "Figure 5A. Variability of 1-PAC scores from the 100 cola runs. Consensus partitionings were applied by row sampling."}
+```{r, fig.cap = "Figure S7.5A. Variability of 1-PAC scores from the 100 cola runs. Consensus partitionings were applied by row sampling."}
 dataset = "HSMM_single_cell_by_row"
 stat = "1-PAC"
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_subgroup_repeat_@{stat}_mean_vs_sd.pdf"))
@@ -171,7 +171,7 @@ add_pdf(qq("@{BASE_DIR}/image/@{dataset}_subgroup_repeat_@{stat}_mean_vs_sd.pdf"
 
 #### 1-PAC, by column
 
-```{r, fig.cap = "Figure 5B. Variability of 1-PAC scores from the 100 cola runs. Consensus partitionings were applied by column sampling."}
+```{r, fig.cap = "Figure S7.5B. Variability of 1-PAC scores from the 100 cola runs. Consensus partitionings were applied by column sampling."}
 dataset = "HSMM_single_cell_by_column"
 stat = "1-PAC"
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_subgroup_repeat_@{stat}_mean_vs_sd.pdf"))
@@ -179,7 +179,7 @@ add_pdf(qq("@{BASE_DIR}/image/@{dataset}_subgroup_repeat_@{stat}_mean_vs_sd.pdf"
 
 #### Mean silhouette, by row
 
-```{r, fig.cap = "Figure 5C. Variability of mean silhouette scores from the 100 cola runs. Consensus partitionings were applied by row sampling."}
+```{r, fig.cap = "Figure S7.5C. Variability of mean silhouette scores from the 100 cola runs. Consensus partitionings were applied by row sampling."}
 dataset = "HSMM_single_cell_by_row"
 stat = "mean_silhouette"
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_subgroup_repeat_@{stat}_mean_vs_sd.pdf"))
@@ -187,14 +187,14 @@ add_pdf(qq("@{BASE_DIR}/image/@{dataset}_subgroup_repeat_@{stat}_mean_vs_sd.pdf"
 
 #### Mean silhouette, by column
 
-```{r, fig.cap = "Figure 5D. Variability of mean silhouette scores from the 100 cola runs. Consensus partitionings were applied by column sampling."}
+```{r, fig.cap = "Figure S7.5D. Variability of mean silhouette scores from the 100 cola runs. Consensus partitionings were applied by column sampling."}
 dataset = "TCGA_GBM_by_column"
 stat = "mean_silhouette"
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_subgroup_repeat_@{stat}_mean_vs_sd.pdf"))
 ```
 #### Concordance, by row
 
-```{r, fig.cap = "Figure 5E. Variability of concordance scores from the 100 cola runs. Consensus partitionings were applied by row sampling."}
+```{r, fig.cap = "Figure S7.5E. Variability of concordance scores from the 100 cola runs. Consensus partitionings were applied by row sampling."}
 dataset = "HSMM_single_cell_by_row"
 stat = "concordance"
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_subgroup_repeat_@{stat}_mean_vs_sd.pdf"))
@@ -203,7 +203,7 @@ add_pdf(qq("@{BASE_DIR}/image/@{dataset}_subgroup_repeat_@{stat}_mean_vs_sd.pdf"
 
 #### Concordance, by column
 
-```{r, fig.cap = "Figure 5F. Variability of concordance scores from the 100 cola runs. Consensus partitionings were applied by row sampling."}
+```{r, fig.cap = "Figure S7.5F. Variability of concordance scores from the 100 cola runs. Consensus partitionings were applied by row sampling."}
 dataset = "TCGA_GBM_by_column"
 stat = "concordance"
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_subgroup_repeat_@{stat}_mean_vs_sd.pdf"))
@@ -214,14 +214,14 @@ add_pdf(qq("@{BASE_DIR}/image/@{dataset}_subgroup_repeat_@{stat}_mean_vs_sd.pdf"
 
 #### by row
 
-```{r, fig.cap = "Figure 6A. Mean concordance in the 100 cola runs. Consensus partitionings were applied by row sampling."}
+```{r, fig.cap = "Figure S7.6A. Mean concordance in the 100 cola runs. Consensus partitionings were applied by row sampling."}
 dataset = "HSMM_single_cell_by_row"
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_subgroup_repeat_concordance.pdf"))
 ```
 
 #### by column
 
-```{r, fig.cap = "Figure 6B. Mean concordance in the 100 cola runs. Consensus partitionings were applied by column sampling."}
+```{r, fig.cap = "Figure S7.6B. Mean concordance in the 100 cola runs. Consensus partitionings were applied by column sampling."}
 dataset = "HSMM_single_cell_by_column"
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_subgroup_repeat_concordance.pdf"))
 ```
@@ -232,14 +232,14 @@ add_pdf(qq("@{BASE_DIR}/image/@{dataset}_subgroup_repeat_concordance.pdf"))
 
 #### by row
 
-```{r, fig.cap = "Figure 7A. Mean concordance of consensus partitioning with 25 and 200 samplings. Consensus partitionings were applied by row sampling."}
+```{r, fig.cap = "Figure S7.7A. Mean concordance of consensus partitioning with 25 and 200 samplings. Consensus partitionings were applied by row sampling."}
 dataset = "HSMM_single_cell_by_row"
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_subgroup_repeat_25_vs_200.pdf"))
 ```
 
 #### by column
 
-```{r, fig.cap = "Figure 7B. Mean concordance of consensus partitioning with 25 and 200 samplings. Consensus partitionings were applied by column sampling."}
+```{r, fig.cap = "Figure S7.7B. Mean concordance of consensus partitioning with 25 and 200 samplings. Consensus partitionings were applied by column sampling."}
 dataset = "HSMM_single_cell_by_column"
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_subgroup_repeat_25_vs_200.pdf"))
 ```
@@ -249,14 +249,14 @@ add_pdf(qq("@{BASE_DIR}/image/@{dataset}_subgroup_repeat_25_vs_200.pdf"))
 
 #### by row
 
-```{r, out.width = "800px", fig.cap = "Figure 8A. Relations between mean 1-PAC from 25/200 samplings and concordance. Consensus partitionings were applied by row sampling."}
+```{r, out.width = "800px", fig.cap = "Figure S7.8A. Relations between mean 1-PAC from 25/200 samplings and concordance. Consensus partitionings were applied by row sampling."}
 dataset = "HSMM_single_cell_by_row"
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_subgroup_repeat_25_vs_200_pac_vs_corcondance.pdf"))
 ```
 
 #### by column
 
-```{r, out.width = "800px", fig.cap = "Figure 8B. Relations between mean 1-PAC from 25/200 samplings and concordance. Consensus partitionings were applied by column sampling."}
+```{r, out.width = "800px", fig.cap = "Figure S7.8B. Relations between mean 1-PAC from 25/200 samplings and concordance. Consensus partitionings were applied by column sampling."}
 dataset = "HSMM_single_cell_by_column"
 add_pdf(qq("@{BASE_DIR}/image/@{dataset}_subgroup_repeat_25_vs_200_pac_vs_corcondance.pdf"))
 ```
