@@ -125,7 +125,7 @@ normal distribution is generated. The 160 rows are configured as follows:
    diagonal. This simulates intermediate correlations but in a large group of
    rows.
 
-```{r, echo = FALSE, fig.width = 14, fig.height = 14/4, fig.align = "center", fig.cap = "Figure 1.2. A simulation test with three groups of rows with different correlation structures."}
+```{r, echo = FALSE, fig.width = 14, fig.height = 14/4, fig.align = "center", fig.cap = "Figure S1.2. A simulation test with three groups of rows with different correlation structures."}
 set.seed(12345)
 test_ATC(100, 10, 50, 0, 0.8, 0.5)
 ```
