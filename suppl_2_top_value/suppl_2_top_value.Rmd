@@ -73,31 +73,31 @@ res_list = readRDS("/desktop-home/guz/project/development/cola_examples/Ritz_ALL
 
 #### top n = 500
 
-```{r, echo = FALSE, fig.width = 10, fig.height = 2.5, fig.align = "center", fig.cap = "Figure S2.7A. Heatmap of the top 500 genes with the highest SD, CV, MAD and ATC scores, Ritz ALL dataset."}
+```{r, echo = FALSE, fig.width = 10, fig.height = 2.5, fig.align = "center", fig.cap = "Figure S2.3A. Heatmap of the top 500 genes with the highest SD, CV, MAD and ATC scores, Ritz ALL dataset."}
 top_rows_heatmap(res_list, top_n = 500, anno = NULL)
 ```
 
-```{r, echo = FALSE, fig.width = 3, fig.height = 3, fig.align = "center", fig.cap = "Figure S2.8A. Euler diagram of the top 500 genes with the highest SD, CV, MAD and ATC scores, Ritz ALL dataset."}
+```{r, echo = FALSE, fig.width = 3, fig.height = 3, fig.align = "center", fig.cap = "Figure S2.4A. Euler diagram of the top 500 genes with the highest SD, CV, MAD and ATC scores, Ritz ALL dataset."}
 top_rows_overlap(res_list, top_n = 500, method = "euler")
 ```
 
 #### top n = 1000
 
-```{r, echo = FALSE, fig.width = 10, fig.height = 2.5, fig.align = "center", fig.cap = "Figure S2.7B. Heatmap of the top 1000 genes with the highest SD, CV, MAD and ATC scores, Ritz ALL dataset."}
+```{r, echo = FALSE, fig.width = 10, fig.height = 2.5, fig.align = "center", fig.cap = "Figure S2.3B. Heatmap of the top 1000 genes with the highest SD, CV, MAD and ATC scores, Ritz ALL dataset."}
 top_rows_heatmap(res_list, top_n = 1000, anno = NULL)
 ```
 
-```{r, echo = FALSE, fig.width = 3, fig.height = 3, fig.align = "center", fig.cap = "Figure S2.8B. Euler diagram of the top 1000 genes with the highest SD, CV, MAD and ATC scores, Ritz ALL dataset."}
+```{r, echo = FALSE, fig.width = 3, fig.height = 3, fig.align = "center", fig.cap = "Figure S2.4B. Euler diagram of the top 1000 genes with the highest SD, CV, MAD and ATC scores, Ritz ALL dataset."}
 top_rows_overlap(res_list, top_n = 1000, method = "euler")
 ```
 
 #### top n = 2000
 
-```{r, echo = FALSE, fig.width = 10, fig.height = 2.5, fig.align = "center", fig.cap = "Figure S2.7C. Heatmap of the top 2000 genes with the highest SD, CV, MAD and ATC scores, Ritz ALL dataset."}
+```{r, echo = FALSE, fig.width = 10, fig.height = 2.5, fig.align = "center", fig.cap = "Figure S2.3C. Heatmap of the top 2000 genes with the highest SD, CV, MAD and ATC scores, Ritz ALL dataset."}
 top_rows_heatmap(res_list, top_n = 2000, anno = NULL)
 ```
 
-```{r, echo = FALSE, fig.width = 3, fig.height = 3, fig.align = "center", fig.cap = "Figure S2.8C. Euler diagram of the top 2000 genes with the highest SD, CV, MAD and ATC scores, Ritz ALL dataset."}
+```{r, echo = FALSE, fig.width = 3, fig.height = 3, fig.align = "center", fig.cap = "Figure S2.4C. Euler diagram of the top 2000 genes with the highest SD, CV, MAD and ATC scores, Ritz ALL dataset."}
 top_rows_overlap(res_list, top_n = 2000, method = "euler")
 ```
 
@@ -112,31 +112,31 @@ res_list = readRDS("/desktop-home/guz/project/development/cola_examples/TCGA_GBM
 
 #### top n = 500
 
-```{r, echo = FALSE, fig.width = 10, fig.height = 2.5, fig.align = "center", fig.cap = "Figure S2.9A. Heatmap of the top 500 genes with the highest SD, CV, MAD and ATC scores, TCGA GBM microarray dataset."}
+```{r, echo = FALSE, fig.width = 10, fig.height = 2.5, fig.align = "center", fig.cap = "Figure S2.5A. Heatmap of the top 500 genes with the highest SD, CV, MAD and ATC scores, TCGA GBM microarray dataset."}
 top_rows_heatmap(res_list, top_n = 500, anno = NULL)
 ```
 
-```{r, echo = FALSE, fig.width = 3, fig.height = 3, fig.align = "center", fig.cap = "Figure S2.10A. Euler diagram of the top 500 genes with the highest SD, CV, MAD and ATC scores, TCGA GBM microarray dataset."}
+```{r, echo = FALSE, fig.width = 3, fig.height = 3, fig.align = "center", fig.cap = "Figure S2.6A. Euler diagram of the top 500 genes with the highest SD, CV, MAD and ATC scores, TCGA GBM microarray dataset."}
 top_rows_overlap(res_list, top_n = 500, method = "euler")
 ```
 
 #### top n = 1000
 
-```{r, echo = FALSE, fig.width = 10, fig.height = 2.5, fig.align = "center", fig.cap = "Figure S2.9B. Heatmap of the top 1000 genes with the highest SD, CV, MAD and ATC scores, TCGA GBM microarray dataset."}
+```{r, echo = FALSE, fig.width = 10, fig.height = 2.5, fig.align = "center", fig.cap = "Figure S2.5B. Heatmap of the top 1000 genes with the highest SD, CV, MAD and ATC scores, TCGA GBM microarray dataset."}
 top_rows_heatmap(res_list, top_n = 1000, anno = NULL)
 ```
 
-```{r, echo = FALSE, fig.width = 3, fig.height = 3, fig.align = "center", fig.cap = "Figure S2.10B. Euler diagram of the top 1000 genes with the highest SD, CV, MAD and ATC scores, TCGA GBM microarray dataset."}
+```{r, echo = FALSE, fig.width = 3, fig.height = 3, fig.align = "center", fig.cap = "Figure S2.6B. Euler diagram of the top 1000 genes with the highest SD, CV, MAD and ATC scores, TCGA GBM microarray dataset."}
 top_rows_overlap(res_list, top_n = 1000, method = "euler")
 ```
 
 #### top n = 2000
 
-```{r, echo = FALSE, fig.width = 10, fig.height = 2.5, fig.align = "center", fig.cap = "Figure S2.9C. Heatmap of the top 2000 genes with the highest SD, CV, MAD and ATC scores, TCGA GBM microarray dataset."}
+```{r, echo = FALSE, fig.width = 10, fig.height = 2.5, fig.align = "center", fig.cap = "Figure S2.5C. Heatmap of the top 2000 genes with the highest SD, CV, MAD and ATC scores, TCGA GBM microarray dataset."}
 top_rows_heatmap(res_list, top_n = 2000, anno = NULL)
 ```
 
-```{r, echo = FALSE, fig.width = 3, fig.height = 3, fig.align = "center", fig.cap = "Figure S2.10C. Euler diagram of the top 2000 genes with the highest SD, CV, MAD and ATC scores, TCGA GBM microarray dataset."}
+```{r, echo = FALSE, fig.width = 3, fig.height = 3, fig.align = "center", fig.cap = "Figure S2.6C. Euler diagram of the top 2000 genes with the highest SD, CV, MAD and ATC scores, TCGA GBM microarray dataset."}
 top_rows_overlap(res_list, top_n = 2000, method = "euler")
 ```
 
@@ -149,31 +149,31 @@ res_list = readRDS("/desktop-home/guz/project/development/cola_examples/HSMM_sin
 
 #### top n = 500
 
-```{r, echo = FALSE, fig.width = 10, fig.height = 2.5, fig.align = "center", fig.cap = "Figure S2.3A. Heatmap of the top 500 genes with the highest SD, CV, MAD and ATC scores, HSMM single cell RNASeq dataset."}
+```{r, echo = FALSE, fig.width = 10, fig.height = 2.5, fig.align = "center", fig.cap = "Figure S2.7A. Heatmap of the top 500 genes with the highest SD, CV, MAD and ATC scores, HSMM single cell RNASeq dataset."}
 top_rows_heatmap(res_list, top_n = 500, anno = NULL)
 ```
 
-```{r, echo = FALSE, fig.width = 3, fig.height = 3, fig.align = "center", fig.cap = "Figure S2.4A. Euler diagram of the top 500 genes with the highest SD, CV, MAD and ATC scores, HSMM single cell RNASeq dataset."}
+```{r, echo = FALSE, fig.width = 3, fig.height = 3, fig.align = "center", fig.cap = "Figure S2.8A. Euler diagram of the top 500 genes with the highest SD, CV, MAD and ATC scores, HSMM single cell RNASeq dataset."}
 top_rows_overlap(res_list, top_n = 500, method = "euler")
 ```
 
 #### top n = 1000
 
-```{r, echo = FALSE, fig.width = 10, fig.height = 2.5, fig.align = "center", fig.cap = "Figure S2.3B. Heatmap of the top 1000 genes with the highest SD, CV, MAD and ATC scores, HSMM single cell RNASeq dataset."}
+```{r, echo = FALSE, fig.width = 10, fig.height = 2.5, fig.align = "center", fig.cap = "Figure S2.7B. Heatmap of the top 1000 genes with the highest SD, CV, MAD and ATC scores, HSMM single cell RNASeq dataset."}
 top_rows_heatmap(res_list, top_n = 1000, anno = NULL)
 ```
 
-```{r, echo = FALSE, fig.width = 3, fig.height = 3, fig.align = "center", fig.cap = "Figure S2.4B. Euler diagram of the top 1000 genes with the highest SD, CV, MAD and ATC scores, HSMM single cell RNASeq dataset."}
+```{r, echo = FALSE, fig.width = 3, fig.height = 3, fig.align = "center", fig.cap = "Figure S2.8B. Euler diagram of the top 1000 genes with the highest SD, CV, MAD and ATC scores, HSMM single cell RNASeq dataset."}
 top_rows_overlap(res_list, top_n = 1000, method = "euler")
 ```
 
 #### top n = 2000
 
-```{r, echo = FALSE, fig.width = 10, fig.height = 2.5, fig.align = "center", fig.cap = "Figure S2.3C. Heatmap of the top 2000 genes with the highest SD, CV, MAD and ATC scores, HSMM single cell RNASeq dataset."}
+```{r, echo = FALSE, fig.width = 10, fig.height = 2.5, fig.align = "center", fig.cap = "Figure S2.7C. Heatmap of the top 2000 genes with the highest SD, CV, MAD and ATC scores, HSMM single cell RNASeq dataset."}
 top_rows_heatmap(res_list, top_n = 2000, anno = NULL)
 ```
 
-```{r, echo = FALSE, fig.width = 3, fig.height = 3, fig.align = "center", fig.cap = "Figure S2.4C. Euler diagram of the top 2000 genes with the highest SD, CV, MAD and ATC scores, HSMM single cell RNASeq dataset."}
+```{r, echo = FALSE, fig.width = 3, fig.height = 3, fig.align = "center", fig.cap = "Figure S2.8C. Euler diagram of the top 2000 genes with the highest SD, CV, MAD and ATC scores, HSMM single cell RNASeq dataset."}
 top_rows_overlap(res_list, top_n = 2000, method = "euler")
 ```
 
@@ -186,31 +186,31 @@ res_list = readRDS("/desktop-home/guz/project/development/cola_examples/MCF10CA_
 
 #### top n = 500
 
-```{r, echo = FALSE, fig.width = 10, fig.height = 2.5, fig.align = "center", fig.cap = "Figure S2.5A. Heatmap of the top 500 genes with the highest SD, CV, MAD and ATC scores, MCF10CA single cell RNASeq dataset."}
+```{r, echo = FALSE, fig.width = 10, fig.height = 2.5, fig.align = "center", fig.cap = "Figure S2.9A. Heatmap of the top 500 genes with the highest SD, CV, MAD and ATC scores, MCF10CA single cell RNASeq dataset."}
 top_rows_heatmap(res_list, top_n = 500, anno = NULL)
 ```
 
-```{r, echo = FALSE, fig.width = 3, fig.height = 3, fig.align = "center", fig.cap = "Figure S2.6A. Euler diagram of the top 500 genes with the highest SD, CV, MAD and ATC scores, MCF10CA single cell RNASeq dataset."}
+```{r, echo = FALSE, fig.width = 3, fig.height = 3, fig.align = "center", fig.cap = "Figure S2.10A. Euler diagram of the top 500 genes with the highest SD, CV, MAD and ATC scores, MCF10CA single cell RNASeq dataset."}
 top_rows_overlap(res_list, top_n = 500, method = "euler")
 ```
 
 #### top n = 1000
 
-```{r, echo = FALSE, fig.width = 10, fig.height = 2.5, fig.align = "center", fig.cap = "Figure S2.5B. Heatmap of the top 1000 genes with the highest SD, CV, MAD and ATC scores, MCF10CA single cell RNASeq dataset."}
+```{r, echo = FALSE, fig.width = 10, fig.height = 2.5, fig.align = "center", fig.cap = "Figure S2.9B. Heatmap of the top 1000 genes with the highest SD, CV, MAD and ATC scores, MCF10CA single cell RNASeq dataset."}
 top_rows_heatmap(res_list, top_n = 1000, anno = NULL)
 ```
 
-```{r, echo = FALSE, fig.width = 3, fig.height = 3, fig.align = "center", fig.cap = "Figure S2.6B. Euler diagram of the top 1000 genes with the highest SD, CV, MAD and ATC scores, MCF10CA single cell RNASeq dataset."}
+```{r, echo = FALSE, fig.width = 3, fig.height = 3, fig.align = "center", fig.cap = "Figure S2.10B. Euler diagram of the top 1000 genes with the highest SD, CV, MAD and ATC scores, MCF10CA single cell RNASeq dataset."}
 top_rows_overlap(res_list, top_n = 1000, method = "euler")
 ```
 
 #### top n = 2000
 
-```{r, echo = FALSE, fig.width = 10, fig.height = 2.5, fig.align = "center", fig.cap = "Figure S2.5C. Heatmap of the top 2000 genes with the highest SD, CV, MAD and ATC scores, MCF10CA single cell RNASeq dataset."}
+```{r, echo = FALSE, fig.width = 10, fig.height = 2.5, fig.align = "center", fig.cap = "Figure S2.9C. Heatmap of the top 2000 genes with the highest SD, CV, MAD and ATC scores, MCF10CA single cell RNASeq dataset."}
 top_rows_heatmap(res_list, top_n = 2000, anno = NULL)
 ```
 
-```{r, echo = FALSE, fig.width = 3, fig.height = 3, fig.align = "center", fig.cap = "Figure S2.6C. Euler diagram of the top 2000 genes with the highest SD, CV, MAD and ATC scores, MCF10CA single cell RNASeq dataset."}
+```{r, echo = FALSE, fig.width = 3, fig.height = 3, fig.align = "center", fig.cap = "Figure S2.10C. Euler diagram of the top 2000 genes with the highest SD, CV, MAD and ATC scores, MCF10CA single cell RNASeq dataset."}
 top_rows_overlap(res_list, top_n = 2000, method = "euler")
 ```
 
