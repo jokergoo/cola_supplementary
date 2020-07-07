@@ -23,5 +23,5 @@ rmd_files = rmd_files[od]
 
 library(GetoptLong)
 
-qqcat("- Supporting material @{ind}: [@{title}](https://jokergoo.github.io/cola_supplementary/@{gsub('Rmd$', 'html', rmd_files)})\n")
+qqcat("- Supporting material @{ind}: [@{title}](https://jokergoo.github.io/cola_supporting_materials/@{gsub('Rmd$', 'html', rmd_files)})\n")
 ```
