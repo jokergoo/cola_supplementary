@@ -1,4 +1,6 @@
 
+setwd("/icgc/dkfzlsdf/analysis/B080/guz/cola_test/cola_supplementary")
+
 library(GetoptLong)
 library(bsub)
 rmd_files = scan(pipe("ls $PWD/*/*.Rmd"), what = "character")
